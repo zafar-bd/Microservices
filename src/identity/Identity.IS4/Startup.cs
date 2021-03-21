@@ -15,8 +15,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Identity.IS4.Services;
 using System.Diagnostics;
-using IdentityServer4.EntityFramework.Storage;
-using IdentityServer4.EntityFramework.DbContexts;
 using System.Reflection;
 
 namespace Identity.IS4
@@ -40,6 +38,7 @@ namespace Identity.IS4
             services.AddScoped<IEmailSender, EmailSender>();
             string conStr = Configuration.GetConnectionString("DefaultConnection");
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(conStr));
 
