@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+using Identity.IS4.Data.Seed;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,14 +45,17 @@ namespace Identity.IS4
 
                 var host = CreateHostBuilder(args).Build();
 
-                if (seed)
+                //if (seed)
+                if (true)
                 {
                     Log.Information("Seeding database...");
                     var config = host.Services.GetRequiredService<IConfiguration>();
                     var connectionString = config.GetConnectionString("DefaultConnection");
-                    SeedData.EnsureSeedData(connectionString);
+                    //SeedData.EnsureSeedData(connectionString);
+                    SeedIdentityData.EnsureSeedData(connectionString);
+                    SeedIDPData.EnsureSeedData(connectionString);
                     Log.Information("Done seeding database.");
-                    return 0;
+                    //return 0;
                 }
 
                 Log.Information("Starting host...");
@@ -63,10 +67,10 @@ namespace Identity.IS4
                 Log.Fatal(ex, "Host terminated unexpectedly.");
                 return 1;
             }
-            finally
-            {
-                Log.CloseAndFlush();
-            }
+            //finally
+            //{
+            //    Log.CloseAndFlush();
+            //}
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

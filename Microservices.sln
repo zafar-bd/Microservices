@@ -41,25 +41,27 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microservices.Inventory", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microservices.Order", "src\libraries\Microservices.Order\Microservices.Order.csproj", "{5CB779F4-EDF3-4786-BA21-114CA3C852F1}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{078E0EDA-D38F-467C-9638-7C577387C137}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workers", "workers", "{C37CE707-3AAF-4CB3-9275-470389E507F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Product.Sales.Worker", "src\workers\Product.Sales.Worker\Product.Sales.Worker.csproj", "{ADACB336-5CE1-42E1-AAFD-8EE0161AB80F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Product.Sales.Worker", "src\workers\Product.Sales.Worker\Product.Sales.Worker.csproj", "{ADACB336-5CE1-42E1-AAFD-8EE0161AB80F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Product.Inventory.Worker", "src\workers\Product.Inventory.Worker\Product.Inventory.Worker.csproj", "{46302DDB-3E01-4757-AAC2-28A0B5374BE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Product.Inventory.Worker", "src\workers\Product.Inventory.Worker\Product.Inventory.Worker.csproj", "{46302DDB-3E01-4757-AAC2-28A0B5374BE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Product.Order.Worker", "src\workers\Product.Order.Worker\Product.Order.Worker.csproj", "{73E517E2-95D4-48A7-AB0C-3573A65D20EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Product.Order.Worker", "src\workers\Product.Order.Worker\Product.Order.Worker.csproj", "{73E517E2-95D4-48A7-AB0C-3573A65D20EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Order.Processor.Worker", "src\workers\Order.Processor.Worker\Order.Processor.Worker.csproj", "{14C67713-3353-4F2D-ADCC-0BE081BC3628}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Order.Processor.Worker", "src\workers\Order.Processor.Worker\Order.Processor.Worker.csproj", "{14C67713-3353-4F2D-ADCC-0BE081BC3628}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sales.Processor.Worker", "src\workers\Sales.Processor.Worker\Sales.Processor.Worker.csproj", "{8AFBF5E2-FB8D-463C-AC8A-84CBE8D7BCBA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sales.Processor.Worker", "src\workers\Sales.Processor.Worker\Sales.Processor.Worker.csproj", "{8AFBF5E2-FB8D-463C-AC8A-84CBE8D7BCBA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sales.Inventory.Worker", "src\workers\Sales.Inventory.Worker\Sales.Inventory.Worker.csproj", "{E9CB3DAD-F10D-4AF3-AC1E-E8E8837BAE4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sales.Inventory.Worker", "src\workers\Sales.Inventory.Worker\Sales.Inventory.Worker.csproj", "{E9CB3DAD-F10D-4AF3-AC1E-E8E8837BAE4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Order.Notification.Worker", "src\workers\Order.Notification.Worker\Order.Notification.Worker.csproj", "{444E5DAB-0F09-488D-BC10-D64BA0120B67}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Order.Notification.Worker", "src\workers\Order.Notification.Worker\Order.Notification.Worker.csproj", "{444E5DAB-0F09-488D-BC10-D64BA0120B67}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sales.Notification.Worker", "src\workers\Sales.Notification.Worker\Sales.Notification.Worker.csproj", "{C407733C-9E75-46AD-983D-1184E58586E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sales.Notification.Worker", "src\workers\Sales.Notification.Worker\Sales.Notification.Worker.csproj", "{C407733C-9E75-46AD-983D-1184E58586E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Exception.Worker", "src\workers\Application.Exception.Worker\Application.Exception.Worker.csproj", "{6AC55CE7-682B-4E10-AF88-2FD86BEE7036}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Log.Worker", "src\workers\Application.Log.Worker\Application.Log.Worker.csproj", "{A7EC90D9-9003-46DE-92A0-386CF1866705}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -115,10 +117,6 @@ Global
 		{5CB779F4-EDF3-4786-BA21-114CA3C852F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5CB779F4-EDF3-4786-BA21-114CA3C852F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5CB779F4-EDF3-4786-BA21-114CA3C852F1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{078E0EDA-D38F-467C-9638-7C577387C137}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{078E0EDA-D38F-467C-9638-7C577387C137}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{078E0EDA-D38F-467C-9638-7C577387C137}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{078E0EDA-D38F-467C-9638-7C577387C137}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ADACB336-5CE1-42E1-AAFD-8EE0161AB80F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ADACB336-5CE1-42E1-AAFD-8EE0161AB80F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ADACB336-5CE1-42E1-AAFD-8EE0161AB80F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -151,6 +149,14 @@ Global
 		{C407733C-9E75-46AD-983D-1184E58586E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C407733C-9E75-46AD-983D-1184E58586E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C407733C-9E75-46AD-983D-1184E58586E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AC55CE7-682B-4E10-AF88-2FD86BEE7036}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AC55CE7-682B-4E10-AF88-2FD86BEE7036}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AC55CE7-682B-4E10-AF88-2FD86BEE7036}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AC55CE7-682B-4E10-AF88-2FD86BEE7036}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7EC90D9-9003-46DE-92A0-386CF1866705}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7EC90D9-9003-46DE-92A0-386CF1866705}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7EC90D9-9003-46DE-92A0-386CF1866705}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7EC90D9-9003-46DE-92A0-386CF1866705}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -182,6 +188,8 @@ Global
 		{E9CB3DAD-F10D-4AF3-AC1E-E8E8837BAE4F} = {C37CE707-3AAF-4CB3-9275-470389E507F9}
 		{444E5DAB-0F09-488D-BC10-D64BA0120B67} = {C37CE707-3AAF-4CB3-9275-470389E507F9}
 		{C407733C-9E75-46AD-983D-1184E58586E5} = {C37CE707-3AAF-4CB3-9275-470389E507F9}
+		{6AC55CE7-682B-4E10-AF88-2FD86BEE7036} = {C37CE707-3AAF-4CB3-9275-470389E507F9}
+		{A7EC90D9-9003-46DE-92A0-386CF1866705} = {C37CE707-3AAF-4CB3-9275-470389E507F9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {740ED24D-19B6-4E15-93B5-4BBEF415CB1B}

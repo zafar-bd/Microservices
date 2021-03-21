@@ -14,6 +14,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Identity.IS4.Services;
+using System.Diagnostics;
+using IdentityServer4.EntityFramework.Storage;
+using IdentityServer4.EntityFramework.DbContexts;
+using System.Reflection;
 
 namespace Identity.IS4
 {
@@ -30,12 +34,14 @@ namespace Identity.IS4
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers();
             services.AddControllersWithViews();
+            services.AddRazorPages();
             services.AddScoped<IEmailSender, EmailSender>();
-            services.AddLocalApiAuthentication();
-
+            string conStr = Configuration.GetConnectionString("DefaultConnection");
+            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(conStr));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -47,29 +53,46 @@ namespace Identity.IS4
                 options.Events.RaiseInformationEvents = true;
                 options.Events.RaiseFailureEvents = true;
                 options.Events.RaiseSuccessEvents = true;
-
-                // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
                 options.EmitStaticAudienceClaim = true;
             })
-                .AddInMemoryIdentityResources(Config.IdentityResources)
-                .AddInMemoryApiScopes(Config.ApiScopes)
-                .AddInMemoryClients(Config.Clients)
+                //.AddInMemoryIdentityResources(Config.IdentityResources)
+                // .AddInMemoryApiScopes(Config.ApiScopes)
+                // .AddInMemoryApiResources(Config.Apis)
+                // .AddInMemoryClients(Config.Clients)
+                .AddConfigurationStore(options =>
+                {
+                    options.ConfigureDbContext = db =>
+                    {
+                        db.LogTo(tsql => Debug.Write(tsql));
+                        db.UseSqlServer(conStr, b => b.MigrationsAssembly(migrationsAssembly));
+                    };
+                })
+                // this adds the operational data from DB (codes, tokens, consents)
+                .AddOperationalStore(options =>
+                {
+                    options.ConfigureDbContext = db =>
+                    {
+                        db.LogTo(tsql => Debug.Write(tsql));
+                        db.UseSqlServer(conStr, b => b.MigrationsAssembly(migrationsAssembly));
+                    };
+                    options.EnableTokenCleanup = true;
+                })
                 .AddAspNetIdentity<ApplicationUser>();
 
             // not recommended for production - you need to store your key material somewhere secure
-            builder.AddDeveloperSigningCredential();
-
+            services.AddLocalApiAuthentication();
             services.AddAuthentication()
                 .AddGoogle(options =>
                 {
                     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-                    
+
                     // register your IdentityServer with Google at https://console.developers.google.com
                     // enable the Google+ API
                     // set the redirect URI to https://localhost:5001/signin-google
                     options.ClientId = "copy client ID from Google here";
                     options.ClientSecret = "copy client secret from Google here";
                 });
+            builder.AddDeveloperSigningCredential();
         }
 
         public void Configure(IApplicationBuilder app)
@@ -77,17 +100,19 @@ namespace Identity.IS4
             if (Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
             }
 
             app.UseStaticFiles();
 
             app.UseRouting();
             app.UseIdentityServer();
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
+                endpoints.MapControllers();
+                endpoints.MapRazorPages();
             });
         }
     }

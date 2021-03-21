@@ -1,11 +1,43 @@
 ﻿@page "/"
+@inject IAccessTokenProvider TokenProvider
+@attribute [Authorize]
+<AuthorizeView>
+    <Authorized>
+        <div class="row">
+            <div class="col-md-8">
+                <div>
+                    Hello @context.User.FindFirst("email").Value,
+                    here's the list of your claims:
+                </div>
+                <div>
+                    @context.User.IsInRole("admin")
+                    <small>
+                        token: @accessToken.Value
+                    </small>
+                </div>
+            </div>
+            <ul>
 
-<h1>Hello, world!</h1>
+                <li>@accessToken.Expires.ToLocalTime()</li>
+                @foreach (var claim in context.User.Claims)
+                {
+                    <li><b>@claim.Type</b>: @claim.Value</li>
+                }
+            </ul>
+        </div>
 
-<div class="alert alert-warning" role="alert">
-    Before authentication will function correctly, you must configure your provider details in <code>Program.cs</code>
-</div>
+    </Authorized>
+    <NotAuthorized>
+        <p>I'm sorry, I can't display anything until you log in</p>
+    </NotAuthorized>
+</AuthorizeView>
 
-Welcome to your new app.
+@code{
+    AccessToken accessToken = new AccessToken();
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await TokenProvider.RequestAccessToken();
+        token.TryGetToken(out accessToken);
+    }
+}
 
-<SurveyPrompt Title="How is Blazor working for you?" />

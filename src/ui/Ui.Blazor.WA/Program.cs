@@ -1,12 +1,10 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
+using Ui.Blazor.WA.Services;
 
 namespace Ui.Blazor.WA
 {
@@ -17,14 +15,20 @@ namespace Ui.Blazor.WA
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
 
             builder.Services.AddOidcAuthentication(options =>
             {
-                // Configure your authentication provider options here.
-                // For more information, see https://aka.ms/blazor-standalone-auth
-                builder.Configuration.Bind("Local", options.ProviderOptions);
+                builder.Configuration.Bind("oidc", options.ProviderOptions);
             });
+
+            builder.Services.AddHttpClient("Metlife.PolicyAdmin.Api", client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:44339");
+            })
+           .AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
+
+            builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("Metlife.PolicyAdmin.Api"));
 
             await builder.Build().RunAsync();
         }

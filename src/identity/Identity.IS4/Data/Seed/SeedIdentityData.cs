@@ -5,25 +5,24 @@
 using System;
 using System.Linq;
 using System.Security.Claims;
-using IdentityModel;
-using Identity.IS4.Data;
 using Identity.IS4.Models;
+using IdentityModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
-namespace Identity.IS4
+namespace Identity.IS4.Data.Seed
 {
-    public class SeedData
+    public class SeedIdentityData
     {
         public static void EnsureSeedData(string connectionString)
         {
             var services = new ServiceCollection();
             services.AddLogging();
-
             services.AddDbContext<ApplicationDbContext>(options =>
                options.UseSqlServer(connectionString));
+               //options.UseInMemoryDatabase("AuthIdentity"));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -34,9 +33,15 @@ namespace Identity.IS4
                 using (var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 {
                     var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-                    context.Database.Migrate();
+                    //context.Database.Migrate();
+
+                    if (context.Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory")
+                    {
+                        context.Database.Migrate();
+                    }
 
                     var userMgr = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+                    var roleMgr = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                     var alice = userMgr.FindByNameAsync("alice").Result;
                     if (alice == null)
                     {
@@ -56,8 +61,21 @@ namespace Identity.IS4
                             new Claim(JwtClaimTypes.Name, "Alice Smith"),
                             new Claim(JwtClaimTypes.GivenName, "Alice"),
                             new Claim(JwtClaimTypes.FamilyName, "Smith"),
-                            new Claim(JwtClaimTypes.WebSite, "http://alice.com"),
+                            new Claim(JwtClaimTypes.PhoneNumber, "+8801671836673")
                         }).Result;
+                        if (!result.Succeeded)
+                        {
+                            throw new Exception(result.Errors.First().Description);
+                        }
+
+                        result = roleMgr.CreateAsync(new IdentityRole("admin")).Result;
+                        result = roleMgr.CreateAsync(new IdentityRole("account")).Result;
+                        if (!result.Succeeded)
+                        {
+                            throw new Exception(result.Errors.First().Description);
+                        }
+                        result = userMgr.AddToRoleAsync(alice, "admin").Result;
+                        result = userMgr.AddToRoleAsync(alice, "account").Result;
                         if (!result.Succeeded)
                         {
                             throw new Exception(result.Errors.First().Description);
