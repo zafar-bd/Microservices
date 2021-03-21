@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace Microservices.Product.Cqrs.Queries
 {
     public class ProductQueriesHandler :
-          IRequestHandler<ProductQueryDto, List<ProductViewModel>>
+          IRequestHandler<ProductQueryDto, IEnumerable<ProductViewModel>>
     {
         private readonly ProductDbContext _productDbContext;
         private readonly IMapper _mapper;
@@ -26,7 +26,7 @@ namespace Microservices.Product.Cqrs.Queries
             this._mapper = mapper;
         }
 
-        public async Task<List<ProductViewModel>> Handle(ProductQueryDto request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<ProductViewModel>> Handle(ProductQueryDto request, CancellationToken cancellationToken)
         {
             var query = _productDbContext.Products.AsQueryable();
             
