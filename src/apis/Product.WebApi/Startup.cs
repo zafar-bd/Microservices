@@ -4,9 +4,12 @@ using Microservices.Order.Data.Context;
 using Microservices.Product.Cqrs.Queries;
 using Microservices.Product.Dtos;
 using Microservices.Product.ViewModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,7 +33,6 @@ namespace Product.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
             string conStr = Configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<ProductDbContext>(options =>
@@ -45,10 +47,20 @@ namespace Product.WebApi
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Product.WebApi", Version = "v1" });
             });
 
+
+            services.AddHttpContextAccessor();
+            services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.Authority = Configuration["oidc:Authority"];
+                    options.Audience = Configuration["oidc:Audience"];
+                });
+
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",
-                builder => builder.WithOrigins("https://localhost:44315")
+                builder => builder.WithOrigins("https://localhost:44342")
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials());
@@ -59,10 +71,15 @@ namespace Product.WebApi
 
             services.Configure<ApiBehaviorOptions>(o => { o.SuppressModelStateInvalidFilter = true; });
             services
-                .AddMvc(options =>
-                {
-                    options.Filters.Add(typeof(ValidateModelStateFilter));
-                })
+             .AddControllers()
+             .AddMvcOptions(options =>
+             {
+                 var policyBuilder = new AuthorizationPolicyBuilder();
+                 policyBuilder.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+                 var policy = policyBuilder.RequireAuthenticatedUser().Build();
+                 options.Filters.Add(new AuthorizeFilter(policy));
+                 options.Filters.Add(typeof(ValidateModelStateFilter));
+             })
                 .AddFluentValidation(v => v.RegisterValidatorsFromAssemblyContaining(typeof(Startup)));
         }
 
@@ -80,6 +97,7 @@ namespace Product.WebApi
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
