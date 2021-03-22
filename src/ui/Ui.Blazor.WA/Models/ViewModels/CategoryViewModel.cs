@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace Microservices.Product.ViewModels
+namespace Ui.Blazor.WA.Models.ViewModels
 {
-    public class ProductCategoryViewModel
+    public class CategoryViewModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

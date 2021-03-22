@@ -1,9 +1,5 @@
 ﻿using Microservices.Product.Data.Domains;
-using Microservices.Product.ViewModels;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Microservices.Order.Data.Context
 {

@@ -45,6 +45,15 @@ namespace Product.WebApi
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Product.WebApi", Version = "v1" });
             });
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                builder => builder.WithOrigins("https://localhost:44315")
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials());
+            });
+
             services.AddAutoMapper(typeof(AutomappperProfile));
             services.AddMediatR(typeof(Startup));
 
@@ -66,7 +75,7 @@ namespace Product.WebApi
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Product.WebApi v1"));
             }
-
+            app.UseCors("CorsPolicy");
             app.UseHttpsRedirection();
 
             app.UseRouting();

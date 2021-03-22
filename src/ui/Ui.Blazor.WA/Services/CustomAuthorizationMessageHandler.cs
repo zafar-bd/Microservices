@@ -9,7 +9,7 @@ namespace Ui.Blazor.WA.Services
             NavigationManager navigationManager)
             : base(provider, navigationManager)
         {
-            ConfigureHandler(authorizedUrls: new[] { "https://localhost:44339" });
+            ConfigureHandler(authorizedUrls: new[] { "https://localhost:44315" });
         }
     }
 }

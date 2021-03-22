@@ -3,11 +3,12 @@ using Microservices.Product.Dtos;
 using Microservices.Product.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Product.WebApi.Controllers
 {
-    [Route("api/products")]
+    [Route("api/v1/products")]
     [ApiController]
     public class ProductController : ControllerBase
     {
@@ -17,9 +18,9 @@ namespace Product.WebApi.Controllers
             this._mediator = mediator;
         }
 
-        //[ResponseType(typeof(List<ProductViewModel>)]
         [HttpGet]
+        [ProducesResponseType(typeof(List<ProductViewModel>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetProducts([FromQuery] ProductQueryDto queryDto)
-            => Ok(await _mediator.Send(queryDto));
+        => Ok(await _mediator.Send(queryDto));
     }
 }
