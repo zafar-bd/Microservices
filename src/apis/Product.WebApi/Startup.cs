@@ -16,6 +16,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Product.WebApi.Helpers;
+using ServiceStack.Redis;
+using StackExchange.Redis.Extensions.Newtonsoft;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -81,6 +83,8 @@ namespace Product.WebApi
                  options.Filters.Add(typeof(ValidateModelStateFilter));
              })
                 .AddFluentValidation(v => v.RegisterValidatorsFromAssemblyContaining(typeof(Startup)));
+
+            services.AddCaching(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
