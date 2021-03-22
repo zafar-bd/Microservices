@@ -5,6 +5,7 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Ui.Blazor.WA.HttpClients;
+using Ui.Blazor.WA.Models.App;
 using Ui.Blazor.WA.Services;
 
 namespace Ui.Blazor.WA
@@ -18,14 +19,17 @@ namespace Ui.Blazor.WA
 
             builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
 
+            Endpoints endPoint = null;
+
             builder.Services.AddOidcAuthentication(options =>
             {
+                endPoint = builder.Configuration.GetSection("EndPoints").Get<Endpoints>();
                 builder.Configuration.Bind("oidc", options.ProviderOptions);
             });
 
             builder.Services.AddHttpClient<ProductHttpClient>("api_gateway", client =>
             {
-                client.BaseAddress = new Uri("https://localhost:44315");
+                client.BaseAddress = new Uri(endPoint?.Gateway);
             })
            .AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
 
