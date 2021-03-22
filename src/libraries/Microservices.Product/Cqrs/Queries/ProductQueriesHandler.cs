@@ -5,7 +5,6 @@ using Microservices.Order.Data.Context;
 using Microservices.Product.Dtos;
 using Microservices.Product.ViewModels;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;

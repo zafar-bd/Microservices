@@ -16,8 +16,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Product.WebApi.Helpers;
-using ServiceStack.Redis;
-using StackExchange.Redis.Extensions.Newtonsoft;
 using System.Collections.Generic;
 using System.Diagnostics;
 

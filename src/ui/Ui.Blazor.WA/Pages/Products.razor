@@ -1,7 +1,8 @@
-﻿@page "/fetchdata"
+﻿@page "/products"
+@attribute [Authorize]
 @inject ProductHttpClient Http
 
-<h1>products</h1>
+<h1>Products</h1>
 
 @if (products == null)
 {

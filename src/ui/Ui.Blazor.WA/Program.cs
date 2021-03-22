@@ -18,7 +18,7 @@ namespace Ui.Blazor.WA
             builder.RootComponents.Add<App>("#app");
 
             builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
-
+            
             Endpoints endPoint = null;
 
             builder.Services.AddOidcAuthentication(options =>
@@ -32,6 +32,12 @@ namespace Ui.Blazor.WA
                 client.BaseAddress = new Uri(endPoint?.Gateway);
             })
            .AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
+
+            builder.Services.AddHttpClient<OrderHttpClient>("api_gateway", client =>
+            {
+                client.BaseAddress = new Uri(endPoint?.Gateway);
+            })
+         .AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
 
             builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("api_gateway"));
 

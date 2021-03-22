@@ -6,18 +6,18 @@ using System.Net.Http.Json;
 
 namespace Ui.Blazor.WA.HttpClients
 {
-    public class ProductHttpClient
+    public class OrderHttpClient
     {
         private readonly HttpClient _client;
 
-        public ProductHttpClient(HttpClient client)
+        public OrderHttpClient(HttpClient client)
         {
             this._client = client;
         }
 
-        public async Task<IEnumerable<ProductViewModel>> GetProductsAsync()
+        public async Task<IEnumerable<ProductViewModel>> GetOrdersAsync()
         {
-            return await _client.GetFromJsonAsync<IEnumerable<ProductViewModel>>("p/api/v1/products");
+            return await _client.GetFromJsonAsync<IEnumerable<ProductViewModel>>("o/api/v1/products");
         }
     }
 }

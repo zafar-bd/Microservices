@@ -1,0 +1,41 @@
+﻿@page "/orders"
+@attribute [Authorize]
+@inject OrderHttpClient Http
+
+<h1>Orders</h1>
+
+@if (products == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Category</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in products)
+            {
+                <tr>
+                    <td>@forecast.Name</td>
+                    <td>@forecast.Price</td>
+                    <td>@forecast.ProductCategory?.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IEnumerable<ProductViewModel> products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await Http.GetOrdersAsync();
+    }
+}

@@ -1,8 +1,7 @@
 ﻿using System;
-
-namespace Ui.Blazor.WA.Models.ViewModels
+namespace Microservices.Order.ViewModels
 {
-    public class CategoryViewModel
+    public class ProductCategoryViewModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
