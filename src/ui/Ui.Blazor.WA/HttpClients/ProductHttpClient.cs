@@ -19,7 +19,7 @@ namespace Ui.Blazor.WA.HttpClients
 
         public async Task<IEnumerable<ProductViewModel>> GetProductsAsync()
         {
-            return await _client.GetFromJsonAsync<IEnumerable<ProductViewModel>>("api/v1/p/products");
+            return await _client.GetFromJsonAsync<IEnumerable<ProductViewModel>>("p/api/v1/products");
         }
     }
 }

@@ -29,11 +29,11 @@ namespace Microservices.Product.Cqrs.Queries
         public async Task<IEnumerable<ProductViewModel>> Handle(ProductQueryDto request, CancellationToken cancellationToken)
         {
             var query = _productDbContext.Products.AsQueryable();
-            
-            if (string.IsNullOrEmpty(request.ProductName))
+
+            if (!string.IsNullOrEmpty(request.ProductName))
                 query = query.Where(p => p.Name.StartsWith(request.ProductName));
-            
-            if (request.CategoryId != Guid.Empty)
+
+            if (request.CategoryId is not null)
                 query = query.Where(p => p.ProductCategoryId == request.CategoryId);
 
             var products = await query

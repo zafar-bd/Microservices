@@ -12,7 +12,7 @@
           "Port": 44366
         }
       ],
-      "UpstreamPathTemplate": "/api/{version}/p/{everything}",
+      "UpstreamPathTemplate": "/p/api/{version}/{everything}",
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
