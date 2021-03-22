@@ -16,15 +16,18 @@ else
                 <th>Name</th>
                 <th>Price</th>
                 <th>Category</th>
+                <th>Stock</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in products)
+            @foreach (var product in products)
             {
                 <tr>
-                    <td>@forecast.Name</td>
-                    <td>@forecast.Price</td>
-                    <td>@forecast.ProductCategory?.Name</td>
+                    <td>@product.Name</td>
+                    <td>@product.Price</td>
+                    <td>@product.ProductCategory?.Name</td>
+                    <td>@(product.StockQty-product.HoldQty)</td>
+                    <td><button class="btn btn-primary">Add to Card</button></td>
                 </tr>
             }
         </tbody>

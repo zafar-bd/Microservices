@@ -8,6 +8,7 @@ namespace Order.WebApi.Helpers
         public AutomappperProfile()
         {
             CreateMap<Microservices.Order.Data.Domains.Order, OrderViewModel>().ReverseMap();
+            CreateMap<Microservices.Order.Data.Domains.Order, MyOrderViewModel>().ReverseMap();
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Microservices.Order.Data.Domains;
-using Microservices.Order.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 

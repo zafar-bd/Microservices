@@ -7,6 +7,8 @@ namespace Ui.Blazor.WA.Models.ViewModels
         public Guid Id { get; set; }
         public string Name { get; set; }
         public decimal Price { get; set; }
+        public uint StockQty { get; set; }
+        public uint HoldQty { get; set; }
         public CategoryViewModel ProductCategory { get; set; }
     }
 }

@@ -36,8 +36,7 @@ namespace Ui.Blazor.WA
             builder.Services.AddHttpClient<OrderHttpClient>("api_gateway", client =>
             {
                 client.BaseAddress = new Uri(endPoint?.Gateway);
-            })
-         .AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
+            });
 
             builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("api_gateway"));
 

@@ -46,12 +46,12 @@ namespace Order.WebApi.Controllers
         }
 
         [HttpGet("my")]
-        [ProducesResponseType(typeof(IEnumerable<OrderViewModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(IEnumerable<MyOrderViewModel>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetMyOrders()
         {
             var customerId = Guid.Parse(User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var cacheKey = $"order-{customerId}";
-            var ordersFromCache = await _redisCacheClient.GetAsync<IEnumerable<OrderViewModel>>(cacheKey);
+            var ordersFromCache = await _redisCacheClient.GetAsync<IEnumerable<MyOrderViewModel>>(cacheKey);
 
             if (ordersFromCache != null)
             {

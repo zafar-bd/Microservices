@@ -14,7 +14,7 @@ namespace Microservices.Order.Cqrs.Queries
 {
     public class OrderQueriesHandler :
           IRequestHandler<OrderQueryDto, IEnumerable<OrderViewModel>>,
-          IRequestHandler<MyQueryDto, IEnumerable<OrderViewModel>>
+          IRequestHandler<MyQueryDto, IEnumerable<MyOrderViewModel>>
     {
         private readonly OrderDbContext _orderDbContext;
         private readonly IMapper _mapper;
@@ -25,12 +25,12 @@ namespace Microservices.Order.Cqrs.Queries
             _orderDbContext = orderDbContext;
             _mapper = mapper;
         }
-        public async Task<IEnumerable<OrderViewModel>> Handle(MyQueryDto request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<MyOrderViewModel>> Handle(MyQueryDto request, CancellationToken cancellationToken)
         {
             var orders = await _orderDbContext
                 .Orders
                 .Where(p => p.CustomerId == request.CustomerId)
-                .ProjectTo<OrderViewModel>(_mapper.ConfigurationProvider)
+                .ProjectTo<MyOrderViewModel>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
             return orders;

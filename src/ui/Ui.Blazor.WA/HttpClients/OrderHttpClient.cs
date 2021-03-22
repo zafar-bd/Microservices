@@ -15,9 +15,9 @@ namespace Ui.Blazor.WA.HttpClients
             this._client = client;
         }
 
-        public async Task<IEnumerable<ProductViewModel>> GetOrdersAsync()
+        public async Task<IEnumerable<ProductViewModel>> GetMyOrdersAsync()
         {
-            return await _client.GetFromJsonAsync<IEnumerable<ProductViewModel>>("o/api/v1/products");
+            return await _client.GetFromJsonAsync<IEnumerable<ProductViewModel>>("o/api/v1/orders/my");
         }
     }
 }

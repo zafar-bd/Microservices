@@ -1,5 +1,9 @@
+using MassTransit;
+using Microservices.Exceptions.Data.Context;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Diagnostics;
 
 namespace Application.Exception.Worker
 {
@@ -14,7 +18,27 @@ namespace Application.Exception.Worker
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddHostedService<Worker>();
+                    string conStr = hostContext.Configuration["ConnectionStrings:DefaultConnection"];
+
+                    services.AddDbContext<ExceptionDbContext>(options =>
+                    {
+                        options.LogTo(tsql => Debug.Write(tsql));
+                        options.UseSqlServer(conStr);
+                    });
+
+                    services.AddMassTransit(x =>
+                    {
+                        x.AddConsumer<ExceptionConsumer>();
+                        x.UsingRabbitMq((context, cfg) =>
+                        {
+                            cfg.ReceiveEndpoint("GlobalException", e =>
+                            {
+                                e.ConfigureConsumer<ExceptionConsumer>(context);
+                            });
+                        });
+                    });
+
+                    services.AddMassTransitHostedService();
                 });
     }
 }

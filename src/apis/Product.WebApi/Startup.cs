@@ -1,5 +1,7 @@
 using FluentValidation.AspNetCore;
+using MassTransit;
 using MediatR;
+using Microservices.Common.Exceptions;
 using Microservices.Order.Data.Context;
 using Microservices.Product.Cqrs.Queries;
 using Microservices.Product.Dtos;
@@ -78,11 +80,18 @@ namespace Product.WebApi
                  policyBuilder.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
                  var policy = policyBuilder.RequireAuthenticatedUser().Build();
                  options.Filters.Add(new AuthorizeFilter(policy));
+                 options.Filters.Add(typeof(GlobalExceptionFilter));
                  options.Filters.Add(typeof(ValidateModelStateFilter));
              })
                 .AddFluentValidation(v => v.RegisterValidatorsFromAssemblyContaining(typeof(Startup)));
 
             services.AddCaching(Configuration);
+            services.AddMassTransit(x =>
+            {
+                x.UsingRabbitMq();
+            });
+
+            services.AddMassTransitHostedService();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

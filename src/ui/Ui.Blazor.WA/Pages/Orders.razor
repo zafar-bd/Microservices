@@ -36,6 +36,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        products = await Http.GetOrdersAsync();
+        products = await Http.GetMyOrdersAsync();
     }
 }
