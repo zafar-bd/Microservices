@@ -1,7 +1,8 @@
 using FluentValidation.AspNetCore;
 using MassTransit;
 using MediatR;
-using Microservices.Common.Exceptions;
+using Microservices.Common.BackgroundServices;
+using Microservices.Common.Filters;
 using Microservices.Order.Data.Context;
 using Microservices.Product.Cqrs.Queries;
 using Microservices.Product.Dtos;
@@ -69,6 +70,7 @@ namespace Product.WebApi
             });
 
             services.AddAutoMapper(typeof(AutomappperProfile));
+            services.AddHostedService<GlobalExceptionBackgroundService>();
             services.AddMediatR(typeof(Startup));
 
             services.Configure<ApiBehaviorOptions>(o => { o.SuppressModelStateInvalidFilter = true; });
@@ -92,6 +94,7 @@ namespace Product.WebApi
             });
 
             services.AddMassTransitHostedService();
+            services.AddHostedService<GlobalExceptionBackgroundService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

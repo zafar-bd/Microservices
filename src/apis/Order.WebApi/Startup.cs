@@ -1,7 +1,8 @@
 using FluentValidation.AspNetCore;
 using MassTransit;
 using MediatR;
-using Microservices.Common.Exceptions;
+using Microservices.Common.BackgroundServices;
+using Microservices.Common.Filters;
 using Microservices.Order.Cqrs.Queries;
 using Microservices.Order.Data.Context;
 using Microservices.Order.Dtos;
@@ -87,12 +88,14 @@ namespace Order.WebApi
                 .AddFluentValidation(v => v.RegisterValidatorsFromAssemblyContaining(typeof(Startup)));
 
             services.AddCaching(Configuration);
+            
             services.AddMassTransit(x =>
             {
                 x.UsingRabbitMq();
             });
 
             services.AddMassTransitHostedService();
+            services.AddHostedService<GlobalExceptionBackgroundService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

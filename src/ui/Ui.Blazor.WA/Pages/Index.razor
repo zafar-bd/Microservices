@@ -1,5 +1,4 @@
 ﻿@page "/"
-@inject IAccessTokenProvider TokenProvider
 @attribute [Authorize]
 <AuthorizeView>
     <Authorized>
@@ -9,20 +8,20 @@
                     Hello @context.User.FindFirst("given_name").Value,
                     here's the list of your claims:
                 </div>
-                <div>
+                @*<div>
                     @context.User.IsInRole("admin")
                     <small>
                         token: @accessToken.Value
                     </small>
-                </div>
+                </div>*@
             </div>
             <ul>
 
-                <li>@accessToken.Expires.ToLocalTime()</li>
+                @*<li>@accessToken.Expires.ToLocalTime()</li>
                 @foreach (var claim in context.User.Claims)
                 {
                     <li><b>@claim.Type</b>: @claim.Value</li>
-                }
+                }*@
             </ul>
         </div>
 
@@ -33,12 +32,9 @@
 </AuthorizeView>
 
 @code{
-    AccessToken accessToken = new AccessToken();
-
     protected override async Task OnInitializedAsync()
     {
-        var token = await TokenProvider.RequestAccessToken();
-        token.TryGetToken(out accessToken);
+      
     }
 
 }

@@ -1,4 +1,6 @@
 ﻿using MassTransit;
+using Microservices.Common.EventChannel;
+using Microservices.Common.Exceptions;
 using Microservices.Common.Messages;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +11,7 @@ using System;
 using System.Data;
 using System.Text.RegularExpressions;
 
-namespace Microservices.Common.Exceptions
+namespace Microservices.Common.Filters
 {
     public class GlobalExceptionFilter : ExceptionFilterAttribute
     {
@@ -17,7 +19,7 @@ namespace Microservices.Common.Exceptions
 
         public GlobalExceptionFilter(IPublishEndpoint publishEndpoint)
         {
-            this._publishEndpoint = publishEndpoint;
+            _publishEndpoint = publishEndpoint;
         }
         public override async System.Threading.Tasks.Task OnExceptionAsync(ExceptionContext context)
         {
@@ -88,7 +90,7 @@ namespace Microservices.Common.Exceptions
                 });
                 context.HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
-                await _publishEndpoint.Publish(new GlobalExceptionMessage
+                await EventDispatchChannel<GlobalExceptionMessage>.PushAsync(new GlobalExceptionMessage
                 {
                     ApplicationName = context.ActionDescriptor.DisplayName,
                     ExceptionMessage = context.Exception?.Message,

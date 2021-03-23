@@ -1,18 +1,18 @@
 using MassTransit;
+using Microservices.Common.BackgroundServices;
+using Microservices.Common.Filters;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Notification.WebApi.Consumers;
 using Notification.WebApi.Hubs;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -30,6 +30,15 @@ namespace Notification.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
+            services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.Authority = Configuration["oidc:Authority"];
+                    options.Audience = Configuration["oidc:Audience"];
+                });
+
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",
@@ -44,7 +53,7 @@ namespace Notification.WebApi
                 opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
                     new[] { "application/octet-stream" });
             });
-            services.AddControllers();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Notification.WebApi", Version = "v1" });
@@ -63,6 +72,21 @@ namespace Notification.WebApi
             });
 
             services.AddMassTransitHostedService();
+            services.AddHostedService<GlobalExceptionBackgroundService>();
+
+            //services.Configure<ApiBehaviorOptions>(o => { o.SuppressModelStateInvalidFilter = true; });
+            services
+             .AddControllers()
+             .AddMvcOptions(options =>
+             {
+                 var policyBuilder = new AuthorizationPolicyBuilder();
+                 policyBuilder.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+                 var policy = policyBuilder.RequireAuthenticatedUser().Build();
+                 options.Filters.Add(new AuthorizeFilter(policy));
+                 options.Filters.Add(typeof(GlobalExceptionFilter));
+                 options.Filters.Add(typeof(ValidateModelStateFilter));
+             });
+            services.AddHostedService<GlobalExceptionBackgroundService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -81,8 +105,8 @@ namespace Notification.WebApi
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

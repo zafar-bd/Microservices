@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using Notification.WebApi.Hubs;
-using System;
 using System.Threading.Tasks;
 
 namespace Notification.WebApi.Consumers
@@ -23,7 +22,6 @@ namespace Notification.WebApi.Consumers
         public async Task Consume(ConsumeContext<Microservices.Common.Messages.Notification> context)
         {
             await _hub.Clients.All.SendAsync("Notification", context.Message.UserId, context.Message.Message);
-            //await _hub.Clients.All.SendAsync("Notification", context.Message.Message);
         }
     }
 }

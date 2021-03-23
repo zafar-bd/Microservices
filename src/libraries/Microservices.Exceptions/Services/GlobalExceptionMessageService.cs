@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Microservices.Exceptions.Services
+﻿namespace Microservices.Exceptions.Services
 {
     class GlobalExceptionMessageService
     {

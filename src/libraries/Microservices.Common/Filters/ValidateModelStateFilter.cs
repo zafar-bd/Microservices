@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Linq;
 
-namespace Order.WebApi.Helpers
+namespace Microservices.Common.Filters
 {
     public class ValidateModelStateFilter : ActionFilterAttribute
     {
