@@ -26,21 +26,24 @@
     {
         var token = await TokenProvider.RequestAccessToken();
         token.TryGetToken(out accessToken);
-        hubConnection = new HubConnectionBuilder()
-         .WithUrl("https://localhost:44394/notificationHub", opt =>
-         {
-             opt.AccessTokenProvider = () => Task.FromResult(accessToken.Value);
-         })
-            .Build();
-
-        hubConnection.On<string, string>("Notification", async (user, message) =>
+        if (accessToken is not null)
         {
-            var encodedMsg = $"{message}, {user}";
-            await jsRuntime.InvokeAsync<string>("console.log", encodedMsg);
-            StateHasChanged();
-        });
+            hubConnection = new HubConnectionBuilder()
+     .WithUrl("https://localhost:44394/notificationHub", opt =>
+     {
+         opt.AccessTokenProvider = () => Task.FromResult(accessToken.Value);
+     })
+        .Build();
 
-        await hubConnection.StartAsync();
+            hubConnection.On<string, string>("Notification", async (user, message) =>
+            {
+                var encodedMsg = $"{message}, {user}";
+                await jsRuntime.InvokeAsync<string>("console.log", encodedMsg);
+                StateHasChanged();
+            });
+
+            await hubConnection.StartAsync();
+        }
     }
 
     public bool IsConnected =>
