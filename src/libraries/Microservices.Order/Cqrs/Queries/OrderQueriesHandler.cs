@@ -14,7 +14,7 @@ namespace Microservices.Order.Cqrs.Queries
 {
     public class OrderQueriesHandler :
           IRequestHandler<OrderQueryDto, IEnumerable<OrderViewModel>>,
-          IRequestHandler<MyQueryDto, IEnumerable<MyOrderViewModel>>
+          IRequestHandler<MyOrderQueryDto, IEnumerable<MyOrderViewModel>>
     {
         private readonly OrderDbContext _orderDbContext;
         private readonly IMapper _mapper;
@@ -25,7 +25,7 @@ namespace Microservices.Order.Cqrs.Queries
             _orderDbContext = orderDbContext;
             _mapper = mapper;
         }
-        public async Task<IEnumerable<MyOrderViewModel>> Handle(MyQueryDto request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<MyOrderViewModel>> Handle(MyOrderQueryDto request, CancellationToken cancellationToken)
         {
             var orders = await _orderDbContext
                 .Orders

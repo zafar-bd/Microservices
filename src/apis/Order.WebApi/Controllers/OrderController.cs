@@ -58,7 +58,7 @@ namespace Order.WebApi.Controllers
                 Response.Headers.Add("X-DataSource", $"From-Cache");
                 return Ok(ordersFromCache);
             }
-            var ordersFromDb = await _mediator.Send(new MyQueryDto { CustomerId = customerId });
+            var ordersFromDb = await _mediator.Send(new MyOrderQueryDto { CustomerId = customerId });
 
             if (ordersFromDb.Any())
                 await _redisCacheClient.AddAsync(cacheKey, ordersFromDb, 300);

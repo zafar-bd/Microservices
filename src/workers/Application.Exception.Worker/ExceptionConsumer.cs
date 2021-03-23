@@ -2,6 +2,7 @@
 using Microservices.Exceptions.Data.Context;
 using Microservices.Exceptions.Data.Domains;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 
 namespace Application.Exception.Worker
@@ -30,6 +31,7 @@ namespace Application.Exception.Worker
                 UserName = context.Message.UserName
             });
             await _dbContext.SaveChangesAsync();
+            _logger.LogInformation(context.Message.ExceptionMessage);
         }
     }
 }

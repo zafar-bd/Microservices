@@ -3,6 +3,7 @@ using Microservices.Exceptions.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 using System.Diagnostics;
 
 namespace Application.Exception.Worker
@@ -11,6 +12,7 @@ namespace Application.Exception.Worker
     {
         public static void Main(string[] args)
         {
+            Console.Title = "Microservice Global Exceptions";
             CreateHostBuilder(args).Build().Run();
         }
 
