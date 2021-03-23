@@ -33,7 +33,6 @@ else
 
 @code {
     private IEnumerable<ProductViewModel> products;
-
     protected override async Task OnInitializedAsync()
     {
         products = await Http.GetMyOrdersAsync();

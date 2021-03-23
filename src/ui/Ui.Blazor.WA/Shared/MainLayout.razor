@@ -1,5 +1,6 @@
 ﻿@inherits LayoutComponentBase
-
+@implements IAsyncDisposable
+@inject IJSRuntime jsRuntime
 <div class="page">
     <div class="sidebar">
         <NavMenu />
@@ -16,3 +17,30 @@
         </div>
     </div>
 </div>
+
+@code {
+    private HubConnection hubConnection;
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+           .WithUrl("https://localhost:44394/notificationHub")
+           .Build();
+
+        hubConnection.On<string, string>("Notification", async (user, message) =>
+        {
+            var encodedMsg = $"{message}, {user}";
+            await jsRuntime.InvokeAsync<string>("console.log", encodedMsg);
+            StateHasChanged();
+        });
+
+        await hubConnection.StartAsync();
+    }
+
+    public bool IsConnected =>
+       hubConnection.State == HubConnectionState.Connected;
+
+    public async ValueTask DisposeAsync()
+    {
+        await hubConnection.DisposeAsync();
+    }
+}

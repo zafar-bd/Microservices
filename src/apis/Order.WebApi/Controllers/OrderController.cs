@@ -1,5 +1,7 @@
-﻿using MediatR;
+﻿using MassTransit;
+using MediatR;
 using Microservices.Common.Cache;
+using Microservices.Common.Messages;
 using Microservices.Order.Dtos;
 using Microservices.Order.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -18,11 +20,16 @@ namespace Order.WebApi.Controllers
     {
         private readonly IMediator _mediator;
         private readonly ICacheHelper _redisCacheClient;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public OrderController(IMediator mediator, ICacheHelper redisCacheClient)
+        public OrderController(
+            IMediator mediator,
+            ICacheHelper redisCacheClient,
+            IPublishEndpoint publishEndpoint)
         {
             _mediator = mediator;
             _redisCacheClient = redisCacheClient;
+            this._publishEndpoint = publishEndpoint;
         }
 
         [HttpGet]
@@ -63,6 +70,14 @@ namespace Order.WebApi.Controllers
             if (ordersFromDb.Any())
                 await _redisCacheClient.AddAsync(cacheKey, ordersFromDb, 300);
 
+            await _publishEndpoint.Publish(new Notification
+            {
+                UserId = customerId,
+                Message = "Order Received",
+                MessageFor = customerId.ToString(),
+                MessageFrom = "Order service",
+                MessageSent = DateTimeOffset.UtcNow
+            });
             return Ok(ordersFromDb);
         }
     }

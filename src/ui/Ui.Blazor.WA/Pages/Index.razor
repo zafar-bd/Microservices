@@ -34,10 +34,12 @@
 
 @code{
     AccessToken accessToken = new AccessToken();
+
     protected override async Task OnInitializedAsync()
     {
         var token = await TokenProvider.RequestAccessToken();
         token.TryGetToken(out accessToken);
     }
+
 }
 
