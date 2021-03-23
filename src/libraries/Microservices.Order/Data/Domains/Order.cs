@@ -13,6 +13,7 @@ namespace Microservices.Order.Data.Domains
         public string DeliveredBy { get; set; }
         public string ReceivedBy { get; set; }
         public DateTimeOffset? DeliveredAt { get; set; }
+        public DateTimeOffset? OrderdAt { get; set; }
         public ICollection<OrderItem> OrderItems { get; set; }
         = new List<OrderItem>();
     }

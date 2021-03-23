@@ -14,7 +14,7 @@ namespace Microservices.Order.Data.Context
 
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductCategory> Categories { get; set; }
-        public DbSet<ViewModels.OrderViewModel> Orders { get; set; }
+        public DbSet<Domains.Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Customer> Customers { get; set; }
 
