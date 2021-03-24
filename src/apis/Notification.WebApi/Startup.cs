@@ -14,7 +14,6 @@ using Microsoft.OpenApi.Models;
 using Notification.WebApi.Consumers;
 using Notification.WebApi.Hubs;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Notification.WebApi
 {

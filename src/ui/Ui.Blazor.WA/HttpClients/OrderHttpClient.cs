@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Ui.Blazor.WA.Models.ViewModels;
 using System.Net.Http.Json;
+using Ui.Blazor.WA.Models.Dto;
 
 namespace Ui.Blazor.WA.HttpClients
 {
@@ -16,8 +17,9 @@ namespace Ui.Blazor.WA.HttpClients
         }
 
         public async Task<IEnumerable<ProductViewModel>> GetMyOrdersAsync()
-        {
-            return await _client.GetFromJsonAsync<IEnumerable<ProductViewModel>>("o/api/v1/orders/my");
-        }
+        => await _client.GetFromJsonAsync<IEnumerable<ProductViewModel>>("o/api/v1/orders/my");
+
+        public async Task Checkout(ShoppingCartDto shoppingCartDto)
+        => await _client.PostAsJsonAsync("o/api/v1/orders", shoppingCartDto);
     }
 }

@@ -1,6 +1,7 @@
 ﻿@page "/products"
 @attribute [Authorize]
-@inject ProductHttpClient Http
+@inject ProductHttpClient productService
+@inject OrderHttpClient orderService
 
 <h1>Products</h1>
 
@@ -17,6 +18,7 @@ else
                 <th>Price</th>
                 <th>Category</th>
                 <th>Stock</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -26,8 +28,12 @@ else
                     <td>@product.Name</td>
                     <td>@product.Price</td>
                     <td>@product.ProductCategory?.Name</td>
-                    <td>@(product.StockQty-product.HoldQty)</td>
-                    <td><button class="btn btn-primary">Add to Card</button></td>
+                    <td>@(product.StockQty-@product.HoldQty)</td>
+                    <td>
+                        <input type="button" disabled="@((product.StockQty - @product.HoldQty) == 0 )"
+                               @onclick="@(async e => await this.CheckoutAsync(product.Id,5))"
+                               class="btn btn-primary" value="Add to Card" />
+                    </td>
                 </tr>
             }
         </tbody>
@@ -39,6 +45,21 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        products = await Http.GetProductsAsync();
+        products = await productService.GetProductsAsync();
+    }
+
+    private async Task CheckoutAsync(Guid productId, uint qty)
+    {
+        await orderService.Checkout(new ShoppingCartDto
+        {
+            CartItemDtos = new List<CartItemDto>
+{
+                new CartItemDto
+                {
+                    ProductId =productId,
+                    Qty=qty
+                }
+            }
+        });
     }
 }
