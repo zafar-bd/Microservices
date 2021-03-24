@@ -21,7 +21,7 @@ namespace Notification.WebApi.Consumers
 
         public async Task Consume(ConsumeContext<Microservices.Common.Messages.Notification> context)
         {
-            await _hub.Clients.All.SendAsync("Notification", context.Message.UserId, context.Message.Message);
+            await _hub.Clients.All.SendAsync(context.Message.UserId.ToString(), context.Message);
         }
     }
 }

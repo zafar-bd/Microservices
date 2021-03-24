@@ -1,27 +1,27 @@
 ﻿@page "/"
 @attribute [Authorize]
+
 <AuthorizeView>
     <Authorized>
         <div class="row">
             <div class="col-md-8">
                 <div>
-                    Hello @context.User.FindFirst("given_name").Value,
-                    here's the list of your claims:
+                    Hello @context.User.FindFirst("given_name").Value
                 </div>
                 @*<div>
-                    @context.User.IsInRole("admin")
-                    <small>
-                        token: @accessToken.Value
-                    </small>
-                </div>*@
+                        @context.User.IsInRole("admin")
+                        <small>
+                            token: @accessToken.Value
+                        </small>
+                    </div>*@
             </div>
             <ul>
 
                 @*<li>@accessToken.Expires.ToLocalTime()</li>
-                @foreach (var claim in context.User.Claims)
-                {
-                    <li><b>@claim.Type</b>: @claim.Value</li>
-                }*@
+                    @foreach (var claim in context.User.Claims)
+                    {
+                        <li><b>@claim.Type</b>: @claim.Value</li>
+                    }*@
             </ul>
         </div>
 
@@ -31,11 +31,6 @@
     </NotAuthorized>
 </AuthorizeView>
 
-@code{
-    protected override async Task OnInitializedAsync()
-    {
-      
-    }
 
-}
+
 

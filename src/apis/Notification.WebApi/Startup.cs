@@ -59,6 +59,19 @@ namespace Notification.WebApi
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Notification.WebApi", Version = "v1" });
             });
 
+            //services.Configure<ApiBehaviorOptions>(o => { o.SuppressModelStateInvalidFilter = true; });
+            services
+            .AddControllers()
+            .AddMvcOptions(options =>
+            {
+                var policyBuilder = new AuthorizationPolicyBuilder();
+                policyBuilder.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+                var policy = policyBuilder.RequireAuthenticatedUser().Build();
+                options.Filters.Add(new AuthorizeFilter(policy));
+                options.Filters.Add(typeof(GlobalExceptionFilter));
+                options.Filters.Add(typeof(ValidateModelStateFilter));
+            });
+
             services.AddMassTransit(x =>
             {
                 x.AddConsumer<NotificationConsumer>();
@@ -72,20 +85,6 @@ namespace Notification.WebApi
             });
 
             services.AddMassTransitHostedService();
-            services.AddHostedService<GlobalExceptionBackgroundService>();
-
-            //services.Configure<ApiBehaviorOptions>(o => { o.SuppressModelStateInvalidFilter = true; });
-            services
-             .AddControllers()
-             .AddMvcOptions(options =>
-             {
-                 var policyBuilder = new AuthorizationPolicyBuilder();
-                 policyBuilder.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
-                 var policy = policyBuilder.RequireAuthenticatedUser().Build();
-                 options.Filters.Add(new AuthorizeFilter(policy));
-                 options.Filters.Add(typeof(GlobalExceptionFilter));
-                 options.Filters.Add(typeof(ValidateModelStateFilter));
-             });
             services.AddHostedService<GlobalExceptionBackgroundService>();
         }
 

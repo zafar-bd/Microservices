@@ -69,7 +69,7 @@ namespace Order.WebApi.Controllers
 
             if (ordersFromDb.Any())
                 await _redisCacheClient.AddAsync(cacheKey, ordersFromDb, 300);
-
+            
             await _publishEndpoint.Publish(new Notification
             {
                 UserId = customerId,

@@ -1,3 +1,4 @@
+using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,9 +17,13 @@ namespace Ui.Blazor.WA
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
-
+            builder.Services.AddOptions();
+            builder.Services.AddAuthorizationCore();
             builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
             
+            builder.Services.AddSweetAlert2(options => {
+                options.Theme = SweetAlertTheme.Dark;
+            });
             Endpoints endPoint = null;
 
             builder.Services.AddOidcAuthentication(options =>

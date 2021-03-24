@@ -2,6 +2,8 @@
 @implements IAsyncDisposable
 @inject IJSRuntime jsRuntime
 @inject IAccessTokenProvider TokenProvider
+@inject IConfiguration Configuration
+@inject SweetAlertService Swal
 <div class="page">
     <div class="sidebar">
         <NavMenu />
@@ -18,27 +20,41 @@
         </div>
     </div>
 </div>
-
 @code {
     private HubConnection hubConnection;
     AccessToken accessToken = new AccessToken();
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        var token = await TokenProvider.RequestAccessToken();
-        token.TryGetToken(out accessToken);
-        if (accessToken is not null)
-        {
-            hubConnection = new HubConnectionBuilder()
-     .WithUrl("https://localhost:44394/notificationHub", opt =>
-     {
-         opt.AccessTokenProvider = () => Task.FromResult(accessToken.Value);
-     })
-        .Build();
+        var authState = await authenticationStateTask;
+        var user = authState.User;
 
-            hubConnection.On<string, string>("Notification", async (user, message) =>
+        if (user.Identity.IsAuthenticated)
+        {
+            var token = await TokenProvider.RequestAccessToken();
+            token.TryGetToken(out accessToken);
+
+            var userId = user.FindFirst("sub")?.Value;
+
+            hubConnection = new HubConnectionBuilder()
+            .WithUrl(Configuration["EndPoints:NotificationApi"], opt =>
             {
-                var encodedMsg = $"{message}, {user}";
-                await jsRuntime.InvokeAsync<string>("console.log", encodedMsg);
+                opt.AccessTokenProvider = () => Task.FromResult(accessToken.Value);
+            })
+            .Build();
+
+            hubConnection.On<Notification>(userId, async (message) =>
+            {
+                await Swal.FireAsync(new SweetAlertOptions
+                {
+                    Position = "top-end",
+                    Icon = "success",
+                    Title = message.Message,
+                    Timer = 3000,
+                    Toast = true
+                });
                 StateHasChanged();
             });
 
