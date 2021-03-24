@@ -21,4 +21,8 @@
     <ProjectReference Include="..\Microservices.Common\Microservices.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Cqrs\Commands\" />
+  </ItemGroup>
+
 </Project>

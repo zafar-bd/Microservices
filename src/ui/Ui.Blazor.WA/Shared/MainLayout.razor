@@ -50,7 +50,7 @@
                 await Swal.FireAsync(new SweetAlertOptions
                 {
                     Position = "top-end",
-                    Icon = "success",
+                    Icon = message.IsError ? "error" : "success",
                     Title = message.Message,
                     Timer = 3000,
                     Toast = true

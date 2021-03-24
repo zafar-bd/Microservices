@@ -46,6 +46,8 @@ namespace Order.WebApi
 
             services.AddScoped<IRequestHandler<OrderQueryDto, IEnumerable<OrderViewModel>>, OrderQueriesHandler>();
             services.AddScoped<IRequestHandler<MyOrderQueryDto, IEnumerable<MyOrderViewModel>>, OrderQueriesHandler>();
+            services.AddScoped<IRequestHandler<AvailableStockQueryDto, bool>, OrderQueriesHandler>();
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Order.WebApi", Version = "v1" });

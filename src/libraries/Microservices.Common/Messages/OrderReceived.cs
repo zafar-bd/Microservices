@@ -3,24 +3,21 @@ using System.Collections.Generic;
 
 namespace Microservices.Common.Messages
 {
-    public class OrderCreated
+    public class OrderReceived
     {
-        public Guid Id { get; set; }
         public string CustomerName { get; set; }
         public string Email { get; set; }
         public string Mobile { get; set; }
         public string ShippingAddress { get; set; }
-        public decimal AmountToPay { get; set; }
         public Guid CustomerId { get; set; }
-        public List<OrderItemsCreated> OrderItemsCreated { get; set; }
-        = new List<OrderItemsCreated>();
+        public List<OrderReceivedItem> OrderReceivedItems { get; set; }
+        = new List<OrderReceivedItem>();
     }
 
-    public class OrderItemsCreated
+    public class OrderReceivedItem
     {
-        public Guid ProductId { get; set; }
         public string ProductName { get; set; }
         public uint Qty { get; set; }
-        public decimal Price { get; set; }
+        public Guid ProductId { get; set; }
     }
 }

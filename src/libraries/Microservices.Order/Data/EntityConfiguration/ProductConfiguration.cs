@@ -1,12 +1,12 @@
-﻿using Microservices.Order.ViewModels;
+﻿using Microservices.Order.Data.Domains;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Microservices.Order.Data.EntityConfiguration
 {
-    public class ProductConfiguration : IEntityTypeConfiguration<ProductViewModel>
+    public class ProductConfiguration : IEntityTypeConfiguration<Product>
     {
-        public void Configure(EntityTypeBuilder<ProductViewModel> builder)
+        public void Configure(EntityTypeBuilder<Product> builder)
         {
             builder.Property(p => p.Name).HasMaxLength(250);
             builder

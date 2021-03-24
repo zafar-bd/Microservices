@@ -69,16 +69,25 @@ namespace Order.WebApi.Controllers
 
             if (ordersFromDb.Any())
                 await _redisCacheClient.AddAsync(cacheKey, ordersFromDb, 300);
-            
-            await _publishEndpoint.Publish(new Notification
-            {
-                UserId = customerId,
-                Message = "Order Received",
-                MessageFor = customerId.ToString(),
-                MessageFrom = "Order service",
-                MessageSent = DateTimeOffset.UtcNow
-            });
+
             return Ok(ordersFromDb);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateOrder([FromBody] OrderReceived dto)
+        {
+            dto.CustomerId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            dto.Email = User.FindFirstValue(ClaimTypes.Email);
+            dto.Mobile = User.FindFirstValue(ClaimTypes.MobilePhone);
+
+            var isValidStock = await _mediator.Send(new AvailableStockQueryDto { OrderReceivedItems = dto.OrderReceivedItems });
+
+            if (!isValidStock)
+                return BadRequest("Sorry, Out of Stock!");
+
+            await _publishEndpoint.Publish(dto);
+
+            return Accepted();
         }
     }
 }

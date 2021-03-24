@@ -14,7 +14,8 @@ namespace Microservices.Order.Cqrs.Queries
 {
     public class OrderQueriesHandler :
           IRequestHandler<OrderQueryDto, IEnumerable<OrderViewModel>>,
-          IRequestHandler<MyOrderQueryDto, IEnumerable<MyOrderViewModel>>
+          IRequestHandler<MyOrderQueryDto, IEnumerable<MyOrderViewModel>>,
+          IRequestHandler<AvailableStockQueryDto, bool>
     {
         private readonly OrderDbContext _orderDbContext;
         private readonly IMapper _mapper;
@@ -59,6 +60,26 @@ namespace Microservices.Order.Cqrs.Queries
                 .ToListAsync();
 
             return orders;
+        }
+
+        public async Task<bool> Handle(AvailableStockQueryDto dto, CancellationToken cancellationToken)
+        {
+            var products = await _orderDbContext
+           .Products
+           .Where(p => dto.OrderReceivedItems.Select(o => o.ProductId).Contains(p.Id))
+           .ToListAsync();
+
+            foreach (var product in products)
+            {
+                foreach (var item in dto.OrderReceivedItems)
+                {
+                    if (product.Id == item.ProductId && (product.StockQty - product.HoldQty) < item.Qty)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
     }
 }

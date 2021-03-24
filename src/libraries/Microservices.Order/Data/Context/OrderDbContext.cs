@@ -1,4 +1,5 @@
-﻿using Microservices.Order.Data.Domains;
+﻿using Microservices.Common.Helpers;
+using Microservices.Order.Data.Domains;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -20,7 +21,12 @@ namespace Microservices.Order.Data.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ManageNonEntities();
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+            var entities = modelBuilder.Model.GetEntityTypes();
+            entities.ManageDeletingBehaviorRestrictions();
+            entities.ManageDecimalPrecision();
         }
     }
 }
