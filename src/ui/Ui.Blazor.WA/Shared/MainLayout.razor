@@ -52,7 +52,6 @@
 
                 hubConnection.On<Notification>(userId, async (message) =>
                 {
-                    Console.WriteLine("connected");
                     await Swal.FireAsync(new SweetAlertOptions
                     {
                         Position = "top-end",
