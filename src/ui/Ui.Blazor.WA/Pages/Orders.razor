@@ -13,18 +13,16 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Category</th>
+                <th>OrderdAt</th>
+                <th>Amount To Pay</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var forecast in products)
             {
                 <tr>
-                    <td>@forecast.Name</td>
-                    <td>@forecast.Price</td>
-                    <td>@forecast.ProductCategory?.Name</td>
+                    <td>@forecast.OrderdAt.ToLocalTime()</td>
+                    <td>@forecast.AmountToPay</td>
                 </tr>
             }
         </tbody>
@@ -32,7 +30,7 @@ else
 }
 
 @code {
-    private IEnumerable<ProductViewModel> products;
+    private IEnumerable<OrderViewModel> products;
     protected override async Task OnInitializedAsync()
     {
         products = await Http.GetMyOrdersAsync();

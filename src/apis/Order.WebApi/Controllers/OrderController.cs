@@ -57,7 +57,7 @@ namespace Order.WebApi.Controllers
         [ProducesResponseType(typeof(IEnumerable<MyOrderViewModel>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetMyOrders()
         {
-            var customerId = Guid.Parse(User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            var customerId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var cacheKey = $"order-{customerId}";
             var ordersFromCache = await _redisCacheClient.GetAsync<IEnumerable<MyOrderViewModel>>(cacheKey);
 
@@ -87,6 +87,7 @@ namespace Order.WebApi.Controllers
                 throw new BadRequestException("Sorry, Out of Stock!");
 
             await _publishEndpoint.Publish(dto);
+            await _redisCacheClient.RemoveAsync($"order-{ dto.CustomerId}");
 
             return Accepted();
         }

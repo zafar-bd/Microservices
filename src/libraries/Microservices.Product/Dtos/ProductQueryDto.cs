@@ -9,5 +9,6 @@ namespace Microservices.Product.Dtos
     {
         public string ProductName { get; set; }
         public Guid? CategoryId { get; set; }
+        public bool Cacheable { get; set; } = true;
     }
 }

@@ -28,16 +28,19 @@ namespace Product.WebApi.Controllers
         public async Task<IActionResult> GetProducts([FromQuery] ProductQueryDto queryDto)
         {
             var cacheKey = $"product-{queryDto.ProductName}-{queryDto.CategoryId}";
-            var productsFromCache = await _redisCacheClient.GetAsync<IEnumerable<ProductViewModel>>(cacheKey);
-
-            if (productsFromCache != null)
+            if (queryDto.Cacheable)
             {
-                Response.Headers.Add("X-DataSource", $"From-Cache");
-                return Ok(productsFromCache);
-            }
-            var productsFromDb = await  _mediator.Send(queryDto);
+                var productsFromCache = await _redisCacheClient.GetAsync<IEnumerable<ProductViewModel>>(cacheKey);
 
-            if (productsFromDb.Any())
+                if (productsFromCache != null)
+                {
+                    Response.Headers.Add("X-DataSource", $"From-Cache");
+                    return Ok(productsFromCache);
+                }
+            }
+            var productsFromDb = await _mediator.Send(queryDto);
+
+            if (productsFromDb.Any() && queryDto.Cacheable)
                 await _redisCacheClient.AddAsync(cacheKey, productsFromDb, 300);
 
             return Ok(productsFromDb);

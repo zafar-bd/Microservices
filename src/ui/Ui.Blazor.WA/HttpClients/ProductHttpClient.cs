@@ -15,9 +15,9 @@ namespace Ui.Blazor.WA.HttpClients
             this._client = client;
         }
 
-        public async Task<IEnumerable<ProductViewModel>> GetProductsAsync()
+        public async Task<IEnumerable<ProductViewModel>> GetProductsAsync(bool cacheable = true)
         {
-            return await _client.GetFromJsonAsync<IEnumerable<ProductViewModel>>("p/api/v1/products");
+            return await _client.GetFromJsonAsync<IEnumerable<ProductViewModel>>($"p/api/v1/products?cacheable={cacheable}");
         }
     }
 }

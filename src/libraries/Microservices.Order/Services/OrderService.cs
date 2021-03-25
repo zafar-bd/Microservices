@@ -36,13 +36,14 @@ namespace Microservices.Order.Services
                     Mobile = dto.Mobile,
                     Name = dto.CustomerName,
                 };
+                await _dbContext.Customers.AddAsync(orderToSave.Customer);
             }
 
             dto.OrderReceivedItems.ForEach(c =>
             {
                 var productToUpdate = products.FirstOrDefault(p => p.Id == c.ProductId);
                 var price = productToUpdate.Price * c.Qty;
-                productToUpdate.StockQty -= c.Qty;
+                //productToUpdate.StockQty -= c.Qty;
                 productToUpdate.HoldQty += c.Qty;
                 totalAmountToPay += price;
                 orderItemsToSave.Add(new OrderItem
@@ -61,8 +62,7 @@ namespace Microservices.Order.Services
             orderToSave.OrderdAt = DateTimeOffset.UtcNow;
             orderToSave.ShipmentAddress = dto.ShippingAddress;
             orderToSave.OrderItems = orderItemsToSave;
-
-            await _dbContext.Customers.AddAsync(orderToSave.Customer);
+            
             await _dbContext.Orders.AddAsync(orderToSave);
             await _dbContext.SaveChangesAsync();
 
