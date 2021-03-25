@@ -1,7 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Sales.Notification.Worker
+namespace SalesService.ProductSync.Worker
 {
     public class Program
     {

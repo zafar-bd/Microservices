@@ -6,6 +6,7 @@ using Microservices.Common.Filters;
 using Microservices.Order.Cqrs.Queries;
 using Microservices.Order.Data.Context;
 using Microservices.Order.Dtos;
+using Microservices.Order.Services;
 using Microservices.Order.ViewModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -44,6 +45,7 @@ namespace Order.WebApi
                 options.UseSqlServer(conStr);
             });
 
+            services.AddScoped<IStockService, StockService>();
             services.AddScoped<IRequestHandler<OrderQueryDto, IEnumerable<OrderViewModel>>, OrderQueriesHandler>();
             services.AddScoped<IRequestHandler<MyOrderQueryDto, IEnumerable<MyOrderViewModel>>, OrderQueriesHandler>();
             services.AddScoped<IRequestHandler<AvailableStockQueryDto, bool>, OrderQueriesHandler>();

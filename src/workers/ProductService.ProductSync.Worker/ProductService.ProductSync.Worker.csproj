@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <UserSecretsId>dotnet-Application.Exception.Worker-54C8431C-0235-458C-B3E3-56B969368365</UserSecretsId>
+    <UserSecretsId>dotnet-ProductService.ProductSync.Worker-0D230C6A-12C7-44A7-BACB-4B2DDA6644EB</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\libraries\Microservices.Common\Microservices.Common.csproj" />
-    <ProjectReference Include="..\..\libraries\Microservices.Exceptions\Microservices.Exceptions.csproj" />
+    <ProjectReference Include="..\..\libraries\Microservices.Product\Microservices.Product.csproj" />
   </ItemGroup>
 </Project>

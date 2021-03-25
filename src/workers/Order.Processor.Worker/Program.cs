@@ -26,7 +26,10 @@ namespace Order.Processor.Worker
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
+                    var qName = hostContext.Configuration["QName"];
                     services.AddScoped<IOrderService, OrderService>();
+                    services.AddScoped<IStockService, StockService>();
+
                     string conStr = hostContext.Configuration["ConnectionStrings:DefaultConnection"];
 
                     services.AddDbContext<OrderDbContext>(options =>
@@ -40,7 +43,7 @@ namespace Order.Processor.Worker
                         x.AddConsumer<OrderConsumer>();
                         x.UsingRabbitMq((context, cfg) =>
                         {
-                            cfg.ReceiveEndpoint("OrderReceived", e =>
+                            cfg.ReceiveEndpoint(qName, e =>
                             {
                                 e.ConfigureConsumer<OrderConsumer>(context);
                             });

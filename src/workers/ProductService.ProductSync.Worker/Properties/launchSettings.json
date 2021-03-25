@@ -1,14 +1,11 @@
-{
+﻿{
   "profiles": {
-    "Product.Sales.Worker": {
+    "ProductService.ProductSync.Worker": {
       "commandName": "Project",
+      "dotnetRunMessages": "true",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
-      },
-      "dotnetRunMessages": "true"
-    },
-    "Docker": {
-      "commandName": "Docker"
+      }
     }
   }
 }

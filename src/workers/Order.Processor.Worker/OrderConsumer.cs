@@ -32,7 +32,7 @@ namespace Order.Processor.Worker
                 var dto = context.Message;
                 var savedOrder = await _orderService.SaveOrderAsync(dto);
 
-                List<StockUpdated> stockUpdatedEventMessage = new();
+                ProductUpdated productUpdatedEventMessage = new();
                 OrderCreated orderCreatedEventMessage = new();
                 CustomerCreated customerCreatedEventMessage = new();
                 Notification notificationEventMessage = new();
@@ -51,11 +51,11 @@ namespace Order.Processor.Worker
                     var product = dto.OrderReceivedItems.Find(p => p.ProductId == c.ProductId);
                     var price = c.Price * c.Qty;
                     totalAmountToPay += price;
-                    stockUpdatedEventMessage.Add(new StockUpdated
+                    productUpdatedEventMessage.UpdatedItems.Add(new UpdatedItem
                     {
                         StockQty = c.Qty,
                         HoldQty = c.Qty,
-                        ProductId = c.ProductId,
+                        ProductId = c.ProductId
                     });
 
                     orderCreatedEventMessage.OrderItemsCreated.Add(new OrderItemsCreated
@@ -83,18 +83,22 @@ namespace Order.Processor.Worker
 
                 await _publishEndpoint.Publish(notificationEventMessage);
                 await _publishEndpoint.Publish(orderCreatedEventMessage);
-                await _publishEndpoint.Publish(stockUpdatedEventMessage);
+                await _publishEndpoint.Publish(productUpdatedEventMessage);
 
                 if (savedOrder.Customer is not null)
                     await _publishEndpoint.Publish(customerCreatedEventMessage);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 await _publishEndpoint.Publish(new GlobalExceptionMessage
                 {
                     ApplicationName = "Order Processor",
                     OccurredAt = DateTimeOffset.UtcNow,
-                    UserName = context.Message.CustomerId.ToString()
+                    UserName = context.Message.CustomerId.ToString(),
+                    ExceptionMessage = ex.Message,
+                    FunctionName = "Order Save",
+                    InnerExceptionMessage = ex.InnerException?.Message,
+                    StackTrace = ex.StackTrace
                 });
 
                 await _publishEndpoint.Publish(new Notification
@@ -105,6 +109,8 @@ namespace Order.Processor.Worker
                     MessageSent = DateTimeOffset.UtcNow,
                     IsError = true
                 });
+
+                throw;
             }
         }
     }

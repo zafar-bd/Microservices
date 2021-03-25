@@ -2,7 +2,7 @@
 @attribute [Authorize]
 @inject ProductHttpClient productService
 @inject OrderHttpClient orderService
-
+@inject SweetAlertService Swal
 <h1>Products</h1>
 
 @if (products == null)
@@ -60,6 +60,15 @@ else
                     Qty=qty
                 }
             }
+        });
+
+        await Swal.FireAsync(new SweetAlertOptions
+        {
+            Position = "top-end",
+            Icon = "success",
+            Title = "Order Accepted, You will notify shortly!",
+            Timer = 3000,
+            Toast = true
         });
     }
 }

@@ -13,27 +13,16 @@ namespace Microservices.Order.Services
     public class OrderService : IOrderService
     {
         private readonly OrderDbContext _dbContext;
-        public OrderService(OrderDbContext dbContext)
+        private readonly IStockService _stockService;
+
+        public OrderService(OrderDbContext dbContext, IStockService stockService)
         {
             _dbContext = dbContext;
+            this._stockService = stockService;
         }
         public async Task<Data.Domains.Order> SaveOrderAsync(OrderReceived dto)
         {
-            var products = await _dbContext
-           .Products
-           .Where(p => dto.OrderReceivedItems.Select(o => o.ProductId).Contains(p.Id))
-           .ToListAsync();
-
-            foreach (var product in products)
-            {
-                foreach (var item in dto.OrderReceivedItems)
-                {
-                    if (product.Id == item.ProductId && (product.StockQty - product.HoldQty) < item.Qty)
-                    {
-                        throw new BadRequestException("Out of Stock");
-                    }
-                }
-            }
+            var products = await _stockService.GetAvailableStockProductAsync(dto.OrderReceivedItems);
 
             decimal totalAmountToPay = 0;
             Data.Domains.Order orderToSave = new();
@@ -51,7 +40,7 @@ namespace Microservices.Order.Services
 
             dto.OrderReceivedItems.ForEach(c =>
             {
-                var productToUpdate = products.Find(p => p.Id == c.ProductId);
+                var productToUpdate = products.FirstOrDefault(p => p.Id == c.ProductId);
                 var price = productToUpdate.Price * c.Qty;
                 productToUpdate.StockQty -= c.Qty;
                 productToUpdate.HoldQty += c.Qty;
@@ -72,10 +61,11 @@ namespace Microservices.Order.Services
             orderToSave.OrderdAt = DateTimeOffset.UtcNow;
             orderToSave.ShipmentAddress = dto.ShippingAddress;
             orderToSave.OrderItems = orderItemsToSave;
-           
+
+            await _dbContext.Customers.AddAsync(orderToSave.Customer);
             await _dbContext.Orders.AddAsync(orderToSave);
             await _dbContext.SaveChangesAsync();
-            
+
             return orderToSave;
         }
     }

@@ -1,6 +1,7 @@
 ﻿using MassTransit;
 using MediatR;
 using Microservices.Common.Cache;
+using Microservices.Common.Exceptions;
 using Microservices.Common.Messages;
 using Microservices.Order.Dtos;
 using Microservices.Order.ViewModels;
@@ -77,13 +78,13 @@ namespace Order.WebApi.Controllers
         public async Task<IActionResult> CreateOrder([FromBody] OrderReceived dto)
         {
             dto.CustomerId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            dto.Email = User.FindFirstValue(ClaimTypes.Email);
-            dto.Mobile = User.FindFirstValue(ClaimTypes.MobilePhone);
+            dto.Email = dto.Email ?? User.FindFirstValue(ClaimTypes.Email);
+            dto.Mobile = dto.Mobile ?? User.FindFirstValue("phone_number");
 
             var isValidStock = await _mediator.Send(new AvailableStockQueryDto { OrderReceivedItems = dto.OrderReceivedItems });
 
             if (!isValidStock)
-                return BadRequest("Sorry, Out of Stock!");
+                throw new BadRequestException("Sorry, Out of Stock!");
 
             await _publishEndpoint.Publish(dto);
 

@@ -1,18 +1,18 @@
 using MassTransit;
-using Microservices.Exceptions.Data.Context;
+using Microservices.Order.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Diagnostics;
 
-namespace Application.Exception.Worker
+namespace ProductService.ProductSync.Worker
 {
     public class Program
     {
         public static void Main(string[] args)
         {
-            Console.Title = "Microservice Global Exceptions";
+            Console.Title = "Product Consumer For Product Microservice";
             CreateHostBuilder(args).Build().Run();
         }
 
@@ -21,9 +21,10 @@ namespace Application.Exception.Worker
                 .ConfigureServices((hostContext, services) =>
                 {
                     var qName = hostContext.Configuration["QName"];
+
                     string conStr = hostContext.Configuration["ConnectionStrings:DefaultConnection"];
 
-                    services.AddDbContext<ExceptionDbContext>(options =>
+                    services.AddDbContext<ProductDbContext>(options =>
                     {
                         options.LogTo(tsql => Debug.Write(tsql));
                         options.UseSqlServer(conStr);
@@ -31,12 +32,12 @@ namespace Application.Exception.Worker
 
                     services.AddMassTransit(x =>
                     {
-                        x.AddConsumer<ExceptionConsumer>();
+                        x.AddConsumer<ProductConsumer>();
                         x.UsingRabbitMq((context, cfg) =>
                         {
                             cfg.ReceiveEndpoint(qName, e =>
                             {
-                                e.ConfigureConsumer<ExceptionConsumer>(context);
+                                e.ConfigureConsumer<ProductConsumer>(context);
                             });
                         });
                     });

@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microservices.Order.Data.Context;
 using Microservices.Order.Dtos;
+using Microservices.Order.Services;
 using Microservices.Order.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -19,12 +20,16 @@ namespace Microservices.Order.Cqrs.Queries
     {
         private readonly OrderDbContext _orderDbContext;
         private readonly IMapper _mapper;
+        private readonly IStockService _stockService;
 
-        public OrderQueriesHandler(OrderDbContext orderDbContext,
-            IMapper mapper)
+        public OrderQueriesHandler(
+            OrderDbContext orderDbContext,
+            IMapper mapper,
+            IStockService stockService)
         {
             _orderDbContext = orderDbContext;
             _mapper = mapper;
+            this._stockService = stockService;
         }
         public async Task<IEnumerable<MyOrderViewModel>> Handle(MyOrderQueryDto request, CancellationToken cancellationToken)
         {
@@ -64,22 +69,8 @@ namespace Microservices.Order.Cqrs.Queries
 
         public async Task<bool> Handle(AvailableStockQueryDto dto, CancellationToken cancellationToken)
         {
-            var products = await _orderDbContext
-           .Products
-           .Where(p => dto.OrderReceivedItems.Select(o => o.ProductId).Contains(p.Id))
-           .ToListAsync();
-
-            foreach (var product in products)
-            {
-                foreach (var item in dto.OrderReceivedItems)
-                {
-                    if (product.Id == item.ProductId && (product.StockQty - product.HoldQty) < item.Qty)
-                    {
-                        return false;
-                    }
-                }
-            }
-            return true;
+            var products = await _stockService.GetAvailableStockProductAsync(dto.OrderReceivedItems);
+            return products.Any();
         }
     }
 }
