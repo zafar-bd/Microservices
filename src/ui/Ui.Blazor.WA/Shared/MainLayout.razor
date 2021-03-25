@@ -1,5 +1,4 @@
 ﻿@inherits LayoutComponentBase
-@implements IAsyncDisposable
 @inject IJSRuntime jsRuntime
 @inject IAccessTokenProvider TokenProvider
 @inject IConfiguration Configuration
@@ -20,53 +19,53 @@
         </div>
     </div>
 </div>
+
+
 @code {
     private HubConnection hubConnection;
+    bool connectedHub = false;
     AccessToken accessToken = new AccessToken();
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var authState = await authenticationStateTask;
-        var user = authState.User;
-
-        if (user.Identity.IsAuthenticated)
+        if (!firstRender)
         {
-            var token = await TokenProvider.RequestAccessToken();
-            token.TryGetToken(out accessToken);
+            var authState = await authenticationStateTask;
+            var user = authState.User;
 
-            var userId = user.FindFirst("sub")?.Value;
-
-            hubConnection = new HubConnectionBuilder()
-            .WithUrl(Configuration["EndPoints:NotificationApi"], opt =>
+            if (user.Identity.IsAuthenticated && !connectedHub)
             {
-                opt.AccessTokenProvider = () => Task.FromResult(accessToken.Value);
-            })
-            .Build();
+                var token = await TokenProvider.RequestAccessToken();
+                token.TryGetToken(out accessToken);
 
-            hubConnection.On<Notification>(userId, async (message) =>
-            {
-                await Swal.FireAsync(new SweetAlertOptions
+                var userId = user.FindFirst("sub")?.Value;
+
+                hubConnection = new HubConnectionBuilder()
+                .WithUrl(Configuration["EndPoints:NotificationApi"], opt =>
                 {
-                    Position = "top-end",
-                    Icon = message.IsError ? "error" : "success",
-                    Title = message.Message,
-                    Timer = 3000,
-                    Toast = true
+                    opt.AccessTokenProvider = () => Task.FromResult(accessToken.Value);
+                    connectedHub = true;
+                })
+                .Build();
+
+                hubConnection.On<Notification>(userId, async (message) =>
+                {
+                    Console.WriteLine("connected");
+                    await Swal.FireAsync(new SweetAlertOptions
+                    {
+                        Position = "top-end",
+                        Icon = message.IsError ? "error" : "success",
+                        Title = message.Message,
+                        Timer = 3000,
+                        Toast = true
+                    });
+                    StateHasChanged();
                 });
-                StateHasChanged();
-            });
 
-            await hubConnection.StartAsync();
+                await hubConnection.StartAsync();
+            }
         }
-    }
-
-    public bool IsConnected =>
-       hubConnection.State == HubConnectionState.Connected;
-
-    public async ValueTask DisposeAsync()
-    {
-        await hubConnection.DisposeAsync();
     }
 }
