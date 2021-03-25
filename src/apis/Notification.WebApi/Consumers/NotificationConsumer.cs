@@ -10,7 +10,6 @@ namespace Notification.WebApi.Consumers
     {
         ILogger<NotificationConsumer> _logger;
         private readonly IHubContext<NotificationHub> _hub;
-        //private readonly IHubContext<NotificationHub, IHubClient> _hubContext;
         public NotificationConsumer(
             ILogger<NotificationConsumer> logger,
             IHubContext<NotificationHub> hub)
