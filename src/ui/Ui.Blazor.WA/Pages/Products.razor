@@ -62,7 +62,15 @@ else
                 }
             }
         });
+
         commandStarted = false;
+        products.ToList().ForEach(p =>
+        {
+            if (p.Id == productId)
+            {
+                p.HoldQty += qty;
+            }
+        });
         await Swal.FireAsync(new SweetAlertOptions
         {
             Position = "top-end",
@@ -71,6 +79,7 @@ else
             Timer = 3000,
             Toast = true
         });
+
         StateHasChanged();
     }
 }
