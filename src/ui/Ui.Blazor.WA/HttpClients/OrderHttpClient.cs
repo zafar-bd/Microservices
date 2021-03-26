@@ -17,12 +17,13 @@ namespace Ui.Blazor.WA.HttpClients
             this._client = client;
         }
 
-        public async Task<IEnumerable<OrderViewModel>> GetMyOrdersAsync()
-        => await _client.GetFromJsonAsync<IEnumerable<OrderViewModel>>("o/api/v1/orders/my");
+        public async Task<IEnumerable<MyOrderViewModel>> GetMyOrdersAsync()
+        => await _client.GetFromJsonAsync<IEnumerable<MyOrderViewModel>>("o/api/v1/orders/my");
 
-        public async Task Checkout(ShoppingCartDto shoppingCartDto)
-        {
-            await _client.PostAsJsonAsync("o/api/v1/orders", shoppingCartDto);
-        }
+        public async Task<IEnumerable<OrderToSaleViewModel>> GetOrdersToSaleAsync()
+        => await _client.GetFromJsonAsync<IEnumerable<OrderToSaleViewModel>>("o/api/v1/orders");
+
+        public async Task CheckoutAsync(ShoppingCartDto shoppingCartDto)
+        => await _client.PostAsJsonAsync("o/api/v1/orders", shoppingCartDto);
     }
 }

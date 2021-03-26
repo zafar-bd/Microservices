@@ -43,6 +43,11 @@ namespace Ui.Blazor.WA
                 client.BaseAddress = new Uri(endPoint?.Gateway);
             });
 
+            builder.Services.AddHttpClient<SalesHttpClient>("api_gateway", client =>
+            {
+                client.BaseAddress = new Uri(endPoint?.Gateway);
+            });
+
             builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("api_gateway"));
 
             await builder.Build().RunAsync();

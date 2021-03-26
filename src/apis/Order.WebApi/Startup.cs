@@ -22,6 +22,7 @@ using Microsoft.OpenApi.Models;
 using Order.WebApi.Helpers;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Order.WebApi.Consumers;
 
 namespace Order.WebApi
 {
@@ -92,12 +93,18 @@ namespace Order.WebApi
                 .AddFluentValidation(v => v.RegisterValidatorsFromAssemblyContaining(typeof(Startup)));
 
             services.AddCaching(Configuration);
-            
+
             services.AddMassTransit(x =>
             {
-                x.UsingRabbitMq();
+                x.AddConsumer<OrderStatusConsumer>();
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.ReceiveEndpoint("OrderStatus", e =>
+                    {
+                        e.ConfigureConsumer<OrderStatusConsumer>(context);
+                    });
+                });
             });
-
             services.AddMassTransitHostedService();
             services.AddHostedService<GlobalExceptionBackgroundService>();
         }

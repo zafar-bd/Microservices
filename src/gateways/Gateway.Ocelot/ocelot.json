@@ -38,7 +38,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 44320 
+          "Port": 44320
         }
       ],
       "UpstreamPathTemplate": "/s/api/{version}/{everything}",

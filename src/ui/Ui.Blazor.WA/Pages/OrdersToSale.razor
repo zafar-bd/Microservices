@@ -1,0 +1,88 @@
+﻿@page "/orders-to-sale"
+@attribute [Authorize]
+@inject OrderHttpClient orderService
+@inject SalesHttpClient salesService
+@inject SweetAlertService Swal
+
+<h1>Orders</h1>
+
+@if (orders == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>OrderdAt</th>
+                <th>Amount To Pay</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in orders)
+            {
+                <tr>
+                    <td>@order.OrderdAt.Value.ToLocalTime()</td>
+                    <td>@order.AmountToPay</td>
+                    <td>
+                        <input type="button" disabled="@((order.IsDelivered || commandStarted))"
+                               @onclick="@(async e => await this.SaleAsync(order))"
+                               class="btn btn-primary" value="Sale" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IEnumerable<OrderToSaleViewModel> orders;
+    bool commandStarted = false;
+    protected override async Task OnInitializedAsync()
+    {
+        orders = await orderService.GetOrdersToSaleAsync();
+    }
+
+
+    private async Task SaleAsync(OrderToSaleViewModel order)
+    {
+        commandStarted = true;
+        var salesDto = new SalesDto
+        {
+            CustomerId = order.CustomerId,
+            CustomerName = order.Customer.Name,
+            Email = order.Customer.Email,
+            Mobile = order.Customer.Mobile,
+            Reference = order.Id.ToString(),
+            TotalPrice = order.AmountToPay
+        };
+
+        order.OrderItems.ForEach(o =>
+        {
+            salesDto.SoldItems.Add(new SoldItem
+            {
+                Price = o.Price,
+                ProductId = o.ProductId,
+                ProductName = o.Product.Name,
+                Qty = o.Qty
+            });
+        });
+
+        await salesService.SaleAsync(salesDto);
+
+        commandStarted = false;
+        order.IsDelivered = true;
+        await Swal.FireAsync(new SweetAlertOptions
+        {
+            Position = "top-end",
+            Icon = "success",
+            Title = "Sales Accepted, You will notify shortly!",
+            Timer = 3000,
+            Toast = true
+        });
+
+        StateHasChanged();
+    }
+}

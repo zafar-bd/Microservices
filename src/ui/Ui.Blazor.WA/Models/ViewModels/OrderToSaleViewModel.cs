@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Microservices.Order.ViewModels
+namespace Ui.Blazor.WA.Models.ViewModels
 {
-    public class OrderViewModel
+    public class OrderToSaleViewModel
     {
         public Guid Id { get; set; }
         public CustomerViewModel Customer { get; set; }
@@ -15,7 +17,8 @@ namespace Microservices.Order.ViewModels
         public bool IsDelivered { get; set; }
         public DateTimeOffset? DeliveredAt { get; set; }
         public DateTimeOffset? OrderdAt { get; set; }
-        public ICollection<OrderItemViewModel> OrderItems { get; set; }
-        = new List<OrderItemViewModel>();
+        public List<OrderItem> OrderItems { get; set; }
+            = new List<OrderItem>();
     }
+    
 }

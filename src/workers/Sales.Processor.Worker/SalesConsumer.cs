@@ -81,6 +81,12 @@ namespace Sales.Processor.Worker
                 await _publishEndpoint.Publish(notificationEventMessage);
                 await _publishEndpoint.Publish(salesCreatedEventMessage);
                 await _publishEndpoint.Publish(productUpdatedEventMessage);
+                await _publishEndpoint.Publish(new OrderStatusUpdated
+                {
+                    OrderId = Guid.Parse(savedSales.Reference),
+                    IsDelivered = true,
+                    SalesId = savedSales.Id
+                });
 
                 if (savedSales.Customer is not null)
                     await _publishEndpoint.Publish(customerCreatedEventMessage);

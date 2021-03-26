@@ -1,4 +1,4 @@
-﻿@page "/orders"
+﻿@page "/my-orders"
 @attribute [Authorize]
 @inject OrderHttpClient Http
 
@@ -30,7 +30,7 @@ else
 }
 
 @code {
-    private IEnumerable<OrderViewModel> products;
+    private IEnumerable<MyOrderViewModel> products;
     protected override async Task OnInitializedAsync()
     {
         products = await Http.GetMyOrdersAsync();

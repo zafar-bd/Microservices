@@ -10,6 +10,7 @@ namespace Microservices.Order.ViewModels
         public string ShipmentAddress { get; set; }
         public string DeliveredBy { get; set; }
         public string ReceivedBy { get; set; }
+        public bool IsDelivered { get; set; }
         public DateTimeOffset? DeliveredAt { get; set; }
         public DateTimeOffset? OrderdAt { get; set; }
         public ICollection<OrderItemViewModel> OrderItems { get; set; }
