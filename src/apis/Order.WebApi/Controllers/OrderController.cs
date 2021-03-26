@@ -78,8 +78,8 @@ namespace Order.WebApi.Controllers
         public async Task<IActionResult> CreateOrder([FromBody] OrderReceived dto)
         {
             dto.CustomerId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            dto.Email = dto.Email ?? User.FindFirstValue(ClaimTypes.Email);
-            dto.Mobile = dto.Mobile ?? User.FindFirstValue("phone_number");
+            dto.Email ??= User.FindFirstValue(ClaimTypes.Email);
+            dto.Mobile ??= User.FindFirstValue("phone_number");
 
             var isValidStock = await _mediator.Send(new AvailableStockQueryDto { OrderReceivedItems = dto.OrderReceivedItems });
 

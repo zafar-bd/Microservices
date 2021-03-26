@@ -5,4 +5,16 @@
     <LangVersion>Latest</LangVersion>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Cqrs\Commands\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Microservices.Common\Microservices.Common.csproj" />
+  </ItemGroup>
+
 </Project>
