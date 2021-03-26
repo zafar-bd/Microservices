@@ -58,6 +58,7 @@ namespace Microservices.Sales.Services
             salesToSave.TotalPrice = totalAmountToPay;
             salesToSave.CustomerId = dto.CustomerId;
             salesToSave.SoldAt = DateTimeOffset.UtcNow;
+            salesToSave.Reference = dto.Reference;
             salesToSave.SalesDetails = salesItemsToSave;
             
             await _dbContext.Sales.AddAsync(salesToSave);
