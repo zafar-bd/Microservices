@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using MassTransit;
+using Microservices.Common.Cache;
 using Microservices.Order.Data.Context;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
@@ -10,13 +11,14 @@ namespace Order.WebApi.Consumers
     {
         ILogger<OrderStatusConsumer> _logger;
         private readonly OrderDbContext _dbContext;
-
+        private readonly ICacheHelper _redisCacheClient;
         public OrderStatusConsumer(
             ILogger<OrderStatusConsumer> logger,
-            OrderDbContext dbContext)
+            OrderDbContext dbContext, ICacheHelper redisCacheClient)
         {
             _logger = logger;
             _dbContext = dbContext;
+            _redisCacheClient = redisCacheClient;
         }
 
         public async Task Consume(ConsumeContext<Microservices.Common.Messages.OrderStatusUpdated> context)
@@ -27,6 +29,7 @@ namespace Order.WebApi.Consumers
                 order.IsDelivered = context.Message.IsDelivered;
                 _dbContext.Orders.Update(order);
                 await _dbContext.SaveChangesAsync();
+                await _redisCacheClient.RemoveAsync($"order-{order.Id}");
             }
         }
     }

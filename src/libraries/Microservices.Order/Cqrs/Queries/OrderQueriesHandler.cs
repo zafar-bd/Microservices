@@ -37,7 +37,7 @@ namespace Microservices.Order.Cqrs.Queries
                 .Orders
                 .Where(p => p.CustomerId == request.CustomerId)
                 .ProjectTo<MyOrderViewModel>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+                .ToListAsync(cancellationToken: cancellationToken);
 
             return orders;
         }
@@ -60,9 +60,12 @@ namespace Microservices.Order.Cqrs.Queries
                 query = query.Where(p => p.DeliveredAt >= request.DeliveredAt
                                       && p.DeliveredAt <= request.DeliveredAt);
 
+            if (request.IsDelivered is not null)
+                query = query.Where(p => p.IsDelivered == request.IsDelivered);
+
             var orders = await query
                 .ProjectTo<OrderViewModel>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+                .ToListAsync(cancellationToken: cancellationToken);
 
             return orders;
         }

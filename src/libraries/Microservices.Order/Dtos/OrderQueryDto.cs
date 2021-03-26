@@ -11,5 +11,7 @@ namespace Microservices.Order.Dtos
         public DateTime? DeliveredAt { get; set; }
         public Guid? OrderId { get; set; }
         public Guid? CustomerId { get; set; }
+        public bool? IsDelivered { get; set; }
+        public bool Cacheable { get; set; }
     }
 }

@@ -20,8 +20,8 @@ namespace Ui.Blazor.WA.HttpClients
         public async Task<IEnumerable<MyOrderViewModel>> GetMyOrdersAsync()
         => await _client.GetFromJsonAsync<IEnumerable<MyOrderViewModel>>("o/api/v1/orders/my");
 
-        public async Task<IEnumerable<OrderToSaleViewModel>> GetOrdersToSaleAsync()
-        => await _client.GetFromJsonAsync<IEnumerable<OrderToSaleViewModel>>("o/api/v1/orders");
+        public async Task<IEnumerable<OrderToSaleViewModel>> GetOrdersToSaleAsync(bool isDelivered)
+        => await _client.GetFromJsonAsync<IEnumerable<OrderToSaleViewModel>>($"o/api/v1/orders?isDelivered={isDelivered}");
 
         public async Task CheckoutAsync(ShoppingCartDto shoppingCartDto)
         => await _client.PostAsJsonAsync("o/api/v1/orders", shoppingCartDto);

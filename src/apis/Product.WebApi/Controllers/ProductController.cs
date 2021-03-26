@@ -27,23 +27,27 @@ namespace Product.WebApi.Controllers
         [ProducesResponseType(typeof(IEnumerable<ProductViewModel>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetProducts([FromQuery] ProductQueryDto queryDto)
         {
-            var cacheKey = $"product-{queryDto.ProductName}-{queryDto.CategoryId}";
+            IEnumerable<ProductViewModel> products = default;
             if (queryDto.Cacheable)
             {
-                var productsFromCache = await _redisCacheClient.GetAsync<IEnumerable<ProductViewModel>>(cacheKey);
-
-                if (productsFromCache != null)
-                {
-                    Response.Headers.Add("X-DataSource", $"From-Cache");
-                    return Ok(productsFromCache);
-                }
+                products = await _mediator.Send(queryDto);
+                return Ok(products);
             }
-            var productsFromDb = await _mediator.Send(queryDto);
 
-            if (productsFromDb.Any() && queryDto.Cacheable)
-                await _redisCacheClient.AddAsync(cacheKey, productsFromDb, 300);
+            var cacheKey = $"product-{queryDto.ProductName}-{queryDto.CategoryId}";
 
-            return Ok(productsFromDb);
+            products = await _redisCacheClient.GetAsync<IEnumerable<ProductViewModel>>(cacheKey);
+
+            if (products != null)
+            {
+                Response.Headers.Add("X-DataSource", $"From-Cache");
+                return Ok(products);
+            }
+
+            if (products.Any())
+                await _redisCacheClient.AddAsync(cacheKey, products, 300);
+
+            return Ok(products);
         }
     }
 }

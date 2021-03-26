@@ -42,7 +42,7 @@ else
     bool commandStarted = false;
     protected override async Task OnInitializedAsync()
     {
-        orders = await orderService.GetOrdersToSaleAsync();
+        orders = await orderService.GetOrdersToSaleAsync(isDelivered: false);
     }
 
 

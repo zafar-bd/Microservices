@@ -15,14 +15,23 @@ else
             <tr>
                 <th>OrderdAt</th>
                 <th>Amount To Pay</th>
+                <th>Delivery Status</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in products)
+            @foreach (var product in products)
             {
                 <tr>
-                    <td>@forecast.OrderdAt.ToLocalTime()</td>
-                    <td>@forecast.AmountToPay</td>
+                    <td>@product.OrderdAt.ToLocalTime()</td>
+                    <td>@product.AmountToPay</td>
+                    @if (product.IsDelivered)
+                    {
+                        <td>Delivered</td>
+                    }
+                    else
+                    {
+                        <td>Processing</td>
+                    }
                 </tr>
             }
         </tbody>

@@ -37,20 +37,28 @@ namespace Order.WebApi.Controllers
         [ProducesResponseType(typeof(IEnumerable<OrderViewModel>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetOrders([FromQuery] OrderQueryDto queryDto)
         {
-            var cacheKey = $"order-{queryDto.CustomerId}-{queryDto.OrderId}-{queryDto.DeliveredAt}-{queryDto.OrderedAt}";
-            var ordersFromCache = await _redisCacheClient.GetAsync<IEnumerable<OrderViewModel>>(cacheKey);
+            IEnumerable<OrderViewModel> orders=default;
 
-            if (ordersFromCache != null)
+            if (!queryDto.Cacheable)
+            {
+                orders = await _mediator.Send(queryDto);
+                return Ok(orders);
+            }
+
+            var cacheKey = $"order-{queryDto.CustomerId}-{queryDto.OrderId}-{queryDto.DeliveredAt}-{queryDto.OrderedAt}-{queryDto.IsDelivered}-{queryDto.Cacheable}";
+            orders = await _redisCacheClient.GetAsync<IEnumerable<OrderViewModel>>(cacheKey);
+
+            if (orders != null)
             {
                 Response.Headers.Add("X-DataSource", $"From-Cache");
-                return Ok(ordersFromCache);
+                return Ok(orders);
             }
-            var ordersFromDb = await _mediator.Send(queryDto);
 
-            if (ordersFromDb.Any())
-                await _redisCacheClient.AddAsync(cacheKey, ordersFromDb, 300);
+            orders = await _mediator.Send(queryDto);
+            if (orders.Any())
+                await _redisCacheClient.AddAsync(cacheKey, orders, 300);
 
-            return Ok(ordersFromDb);
+            return Ok(orders);
         }
 
         [HttpGet("my")]
