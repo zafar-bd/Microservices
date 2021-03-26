@@ -62,6 +62,19 @@
                     StateHasChanged();
                 });
 
+                hubConnection.On<Notification>("All", async (message) =>
+                {
+                    await Swal.FireAsync(new SweetAlertOptions
+                    {
+                        Position = "top-end",
+                        Icon = message.IsError ? "error" : "success",
+                        Title = message.Message,
+                        Timer = 3000,
+                        Toast = true
+                    });
+                    StateHasChanged();
+                });
+
                 await hubConnection.StartAsync();
             }
         }

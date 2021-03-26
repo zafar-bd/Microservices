@@ -9,7 +9,7 @@ namespace Microservices.Sales.Data.Domains
         public Guid SalesId { get; set; }
         public Product Product { get; set; }
         public Guid ProductId { get; set; }
-        public uint Qty { get; set; }
+        public int Qty { get; set; }
         public decimal Price { get; set; }
         public decimal Discount { get; set; }
     }

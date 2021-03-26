@@ -17,7 +17,7 @@ namespace Microservices.Common.Messages
     public class OrderReceivedItem
     {
         public string ProductName { get; set; }
-        public uint Qty { get; set; }
+        public int Qty { get; set; }
         public Guid ProductId { get; set; }
     }
 }

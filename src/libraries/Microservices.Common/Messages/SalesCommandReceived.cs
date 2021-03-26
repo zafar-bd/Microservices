@@ -19,7 +19,7 @@ namespace Microservices.Common.Messages
     public class SoldItem
     {
         public string ProductName { get; set; }
-        public uint Qty { get; set; }
+        public int Qty { get; set; }
         public decimal Price { get; set; }
         public Guid ProductId { get; set; }
     }

@@ -51,9 +51,9 @@ namespace ProductService.ProductSync.Worker
             if (!string.IsNullOrEmpty(dto.ProductName))
                 product.Name = dto.ProductName;
             if (dto.HoldQty is not null)
-                product.HoldQty += (uint)dto.HoldQty;
-            //if (dto.StockQty is not null)
-            //    product.StockQty = (uint)dto.StockQty;
+                product.HoldQty += (int)dto.HoldQty;
+            if (dto.StockQty is not null)
+                product.StockQty += (int)dto.StockQty;
             if (dto.Price is not null)
                 product.Price = (decimal)dto.Price;
             _dbContext.Products.Update(product);

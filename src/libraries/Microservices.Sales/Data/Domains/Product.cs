@@ -8,7 +8,7 @@ namespace Microservices.Sales.Data.Domains
         public Guid Id { get; set; }
         public string Name { get; set; }
         public decimal Price { get; set; }
-        public uint StockQty { get; set; }
+        public int StockQty { get; set; }
         public ProductCategory ProductCategory { get; set; }
         public Guid ProductCategoryId { get; set; }
         public ICollection<SalesDetails> SoldItems { get; set; }

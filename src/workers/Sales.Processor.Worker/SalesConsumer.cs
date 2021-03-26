@@ -51,7 +51,8 @@ namespace Sales.Processor.Worker
                     totalAmountToPay += price;
                     productUpdatedEventMessage.UpdatedItems.Add(new UpdatedItem
                     {
-                        StockQty = c.Qty,
+                        StockQty = -c.Qty,
+                        HoldQty = -c.Qty,
                         ProductId = c.ProductId
                     });
 
@@ -83,6 +84,8 @@ namespace Sales.Processor.Worker
 
                 if (savedSales.Customer is not null)
                     await _publishEndpoint.Publish(customerCreatedEventMessage);
+
+                _logger.LogInformation("Sales Processed");
             }
             catch (Exception ex)
             {
