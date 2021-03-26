@@ -1,9 +1,10 @@
+using System;
+using System.Diagnostics;
+using MassTransit;
+using Microservices.Sales.Data.Context;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SalesService.ProductSync.Worker
 {
@@ -11,6 +12,7 @@ namespace SalesService.ProductSync.Worker
     {
         public static void Main(string[] args)
         {
+            Console.Title = "Product Consumer For Sales Microservice";
             CreateHostBuilder(args).Build().Run();
         }
 
@@ -18,7 +20,29 @@ namespace SalesService.ProductSync.Worker
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddHostedService<Worker>();
+                    var qName = hostContext.Configuration["QName"];
+
+                    string conStr = hostContext.Configuration["ConnectionStrings:DefaultConnection"];
+
+                    services.AddDbContext<SalesDbContext>(options =>
+                    {
+                        options.LogTo(tsql => Debug.Write(tsql));
+                        options.UseSqlServer(conStr);
+                    });
+
+                    services.AddMassTransit(x =>
+                    {
+                        x.AddConsumer<ProductConsumer>();
+                        x.UsingRabbitMq((context, cfg) =>
+                        {
+                            cfg.ReceiveEndpoint(qName, e =>
+                            {
+                                e.ConfigureConsumer<ProductConsumer>(context);
+                            });
+                        });
+                    });
+
+                    services.AddMassTransitHostedService();
                 });
     }
 }

@@ -18,7 +18,7 @@ namespace Microservices.Common.Helpers
             ignorableEntities.ForEach(vm =>
             {
                 modelBuilder.Entity(vm).HasNoKey();
-                //modelBuilder.Ignore(vm);
+                modelBuilder.Ignore(vm);
             });
         }
 

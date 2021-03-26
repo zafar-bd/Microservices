@@ -16,7 +16,7 @@ namespace Microservices.Sales.Data.Context
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductCategory> Categories { get; set; }
         public DbSet<Domains.Sales> Sales { get; set; }
-        public DbSet<SalesDetails> SoldItems { get; set; }
+        public DbSet<SalesDetails> SalesDetails { get; set; }
         public DbSet<Customer> Customers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
