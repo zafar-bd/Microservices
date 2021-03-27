@@ -58,7 +58,7 @@ namespace Microservices.Order.Services
             orderToSave.OrderdAt = DateTimeOffset.UtcNow;
             orderToSave.ShipmentAddress = dto.ShippingAddress;
             orderToSave.OrderItems = orderItemsToSave;
-            
+
             await _dbContext.Orders.AddAsync(orderToSave);
             await _dbContext.SaveChangesAsync();
 
