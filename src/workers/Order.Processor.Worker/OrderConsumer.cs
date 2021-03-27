@@ -32,60 +32,7 @@ namespace Order.Processor.Worker
                 var dto = context.Message;
                 var savedOrder = await _orderService.SaveOrderAsync(dto);
 
-                ProductUpdated productUpdatedEventMessage = new();
-                OrderCreated orderCreatedEventMessage = new();
-                CustomerCreated customerCreatedEventMessage = new();
-                Notification notificationEventMessage = new();
-
-                if (savedOrder.Customer is not null)
-                {
-                    customerCreatedEventMessage.Id = savedOrder.CustomerId;
-                    customerCreatedEventMessage.Address = dto.ShippingAddress;
-                    customerCreatedEventMessage.Email = dto.Email;
-                    customerCreatedEventMessage.Mobile = dto.Mobile;
-                    customerCreatedEventMessage.Name = dto.CustomerName;
-                }
-                decimal totalAmountToPay = 0;
-                savedOrder.OrderItems.ToList().ForEach(c =>
-                {
-                    var product = dto.OrderReceivedItems.Find(p => p.ProductId == c.ProductId);
-                    var price = c.Price * c.Qty;
-                    totalAmountToPay += price;
-                    productUpdatedEventMessage.UpdatedItems.Add(new UpdatedItem
-                    {
-                        HoldQty = c.Qty,
-                        ProductId = c.ProductId
-                    });
-
-                    orderCreatedEventMessage.OrderItemsCreated.Add(new OrderItemsCreated
-                    {
-                        ProductId = c.ProductId,
-                        Qty = c.Qty,
-                        Price = price,
-                        ProductName = product.ProductName
-                    });
-                });
-
-                orderCreatedEventMessage.Id = savedOrder.Id;
-                orderCreatedEventMessage.CustomerId = dto.CustomerId;
-                orderCreatedEventMessage.AmountToPay = totalAmountToPay;
-                orderCreatedEventMessage.CustomerName = dto.CustomerName;
-                orderCreatedEventMessage.Email = dto.Email;
-                orderCreatedEventMessage.Mobile = dto.Email;
-                orderCreatedEventMessage.ShippingAddress = dto.ShippingAddress;
-
-                notificationEventMessage.UserId = dto.CustomerId;
-                notificationEventMessage.Message = "Order Processed";
-                notificationEventMessage.MessageFor = dto.CustomerId.ToString();
-                notificationEventMessage.MessageSent = DateTimeOffset.UtcNow;
-                notificationEventMessage.MessageFrom = "Order Processor";
-
-                await _publishEndpoint.Publish(notificationEventMessage);
-                await _publishEndpoint.Publish(orderCreatedEventMessage);
-                await _publishEndpoint.Publish(productUpdatedEventMessage);
-
-                if (savedOrder.Customer is not null)
-                    await _publishEndpoint.Publish(customerCreatedEventMessage);
+                await this.ProcessOrderAsync(savedOrder, dto);
 
                 _logger.LogInformation("Order Processed");
             }
@@ -113,6 +60,65 @@ namespace Order.Processor.Worker
 
                 throw;
             }
+        }
+
+        private async Task ProcessOrderAsync(Microservices.Order.Data.Domains.Order savedOrder, OrderReceived dto)
+        {
+            ProductUpdated productUpdatedEventMessage = new();
+            OrderCreated orderCreatedEventMessage = new();
+            CustomerCreated customerCreatedEventMessage = new();
+            Notification notificationEventMessage = new();
+
+            if (savedOrder.Customer is not null)
+            {
+                customerCreatedEventMessage.Id = savedOrder.CustomerId;
+                customerCreatedEventMessage.Address = dto.ShippingAddress;
+                customerCreatedEventMessage.Email = dto.Email;
+                customerCreatedEventMessage.Mobile = dto.Mobile;
+                customerCreatedEventMessage.Name = dto.CustomerName;
+            }
+
+            decimal totalAmountToPay = 0;
+            savedOrder.OrderItems.ToList().ForEach(c =>
+            {
+                var product = dto.OrderReceivedItems.Find(p => p.ProductId == c.ProductId);
+                var price = c.Price * c.Qty;
+                totalAmountToPay += price;
+                productUpdatedEventMessage.UpdatedItems.Add(new UpdatedItem
+                {
+                    HoldQty = c.Qty,
+                    ProductId = c.ProductId
+                });
+
+                orderCreatedEventMessage.OrderItemsCreated.Add(new OrderItemsCreated
+                {
+                    ProductId = c.ProductId,
+                    Qty = c.Qty,
+                    Price = price,
+                    ProductName = product.ProductName
+                });
+            });
+
+            orderCreatedEventMessage.Id = savedOrder.Id;
+            orderCreatedEventMessage.CustomerId = dto.CustomerId;
+            orderCreatedEventMessage.AmountToPay = totalAmountToPay;
+            orderCreatedEventMessage.CustomerName = dto.CustomerName;
+            orderCreatedEventMessage.Email = dto.Email;
+            orderCreatedEventMessage.Mobile = dto.Email;
+            orderCreatedEventMessage.ShippingAddress = dto.ShippingAddress;
+
+            notificationEventMessage.UserId = dto.CustomerId;
+            notificationEventMessage.Message = "Order Processed";
+            notificationEventMessage.MessageFor = dto.CustomerId.ToString();
+            notificationEventMessage.MessageSent = DateTimeOffset.UtcNow;
+            notificationEventMessage.MessageFrom = "Order Processor";
+
+            await _publishEndpoint.Publish(notificationEventMessage);
+            await _publishEndpoint.Publish(orderCreatedEventMessage);
+            await _publishEndpoint.Publish(productUpdatedEventMessage);
+
+            if (savedOrder.Customer is not null)
+                await _publishEndpoint.Publish(customerCreatedEventMessage);
         }
     }
 }

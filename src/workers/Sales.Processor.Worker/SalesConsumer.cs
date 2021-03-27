@@ -30,67 +30,7 @@ namespace Sales.Processor.Worker
             {
                 var dto = context.Message;
                 var savedSales = await _salesService.SaveSalesAsync(dto);
-
-                ProductUpdated productUpdatedEventMessage = new();
-                SalesCreated salesCreatedEventMessage = new();
-                CustomerCreated customerCreatedEventMessage = new();
-                Notification notificationEventMessage = new();
-
-                if (savedSales.Customer is not null)
-                {
-                    customerCreatedEventMessage.Id = savedSales.CustomerId;
-                    customerCreatedEventMessage.Email = dto.Email;
-                    customerCreatedEventMessage.Mobile = dto.Mobile;
-                    customerCreatedEventMessage.Name = dto.CustomerName;
-                }
-                decimal totalAmountToPay = 0;
-                savedSales.SalesDetails.ToList().ForEach(c =>
-                {
-                    var product = dto.SoldItems.Find(p => p.ProductId == c.ProductId);
-                    var price = c.Price * c.Qty;
-                    totalAmountToPay += price;
-                    productUpdatedEventMessage.UpdatedItems.Add(new UpdatedItem
-                    {
-                        StockQty = -c.Qty,
-                        HoldQty = -c.Qty,
-                        ProductId = c.ProductId
-                    });
-
-                    salesCreatedEventMessage.SalesItemsCreated.Add(new SalesItemsCreated
-                    {
-                        ProductId = c.ProductId,
-                        Qty = c.Qty,
-                        Price = price,
-                        ProductName = product.ProductName
-                    });
-                });
-
-                salesCreatedEventMessage.Id = savedSales.Id;
-                salesCreatedEventMessage.CustomerId = dto.CustomerId;
-                salesCreatedEventMessage.AmountToPay = totalAmountToPay;
-                salesCreatedEventMessage.CustomerName = dto.CustomerName;
-                salesCreatedEventMessage.Email = dto.Email;
-                salesCreatedEventMessage.Mobile = dto.Email;
-
-                notificationEventMessage.UserId = dto.CustomerId;
-                notificationEventMessage.Message = "Sales Processed";
-                notificationEventMessage.MessageFor = dto.CustomerId.ToString();
-                notificationEventMessage.MessageSent = DateTimeOffset.UtcNow;
-                notificationEventMessage.MessageFrom = "Sales Processor";
-
-                await _publishEndpoint.Publish(notificationEventMessage);
-                await _publishEndpoint.Publish(salesCreatedEventMessage);
-                await _publishEndpoint.Publish(productUpdatedEventMessage);
-                await _publishEndpoint.Publish(new OrderStatusUpdated
-                {
-                    OrderId = Guid.Parse(savedSales.Reference),
-                    IsDelivered = true,
-                    SalesId = savedSales.Id
-                });
-
-                if (savedSales.Customer is not null)
-                    await _publishEndpoint.Publish(customerCreatedEventMessage);
-
+                await this.ProcessSalesAsync(savedSales, dto);
                 _logger.LogInformation("Sales Processed");
             }
             catch (Exception ex)
@@ -117,6 +57,73 @@ namespace Sales.Processor.Worker
 
                 throw;
             }
+        }
+
+        private async Task ProcessSalesAsync(Microservices.Sales.Data.Domains.Sales savedSales, SalesCommandReceived dto)
+        {
+            ProductUpdated productUpdatedEventMessage = new();
+            SalesCreated salesCreatedEventMessage = new();
+            CustomerCreated customerCreatedEventMessage = new();
+            Notification notificationEventMessage = new();
+            OrderStatusUpdated orderStatusUpdatedEventMessage = new();
+
+            if (savedSales.Customer is not null)
+            {
+                customerCreatedEventMessage.Id = savedSales.CustomerId;
+                customerCreatedEventMessage.Email = dto.Email;
+                customerCreatedEventMessage.Mobile = dto.Mobile;
+                customerCreatedEventMessage.Name = dto.CustomerName;
+            }
+
+            decimal totalAmountToPay = 0;
+            savedSales.SalesDetails.ToList().ForEach(c =>
+            {
+                var product = dto.SoldItems.Find(p => p.ProductId == c.ProductId);
+                var price = c.Price * c.Qty;
+                totalAmountToPay += price;
+                productUpdatedEventMessage.UpdatedItems.Add(new UpdatedItem
+                {
+                    StockQty = -c.Qty,
+                    HoldQty = -c.Qty,
+                    ProductId = c.ProductId
+                });
+
+                salesCreatedEventMessage.SalesItemsCreated.Add(new SalesItemsCreated
+                {
+                    ProductId = c.ProductId,
+                    Qty = c.Qty,
+                    Price = price,
+                    ProductName = product.ProductName
+                });
+            });
+
+            salesCreatedEventMessage.Id = savedSales.Id;
+            salesCreatedEventMessage.CustomerId = dto.CustomerId;
+            salesCreatedEventMessage.AmountToPay = totalAmountToPay;
+            salesCreatedEventMessage.CustomerName = dto.CustomerName;
+            salesCreatedEventMessage.Email = dto.Email;
+            salesCreatedEventMessage.Mobile = dto.Email;
+
+            notificationEventMessage.UserId = dto.CustomerId;
+            notificationEventMessage.Message = "Sales Processed";
+            notificationEventMessage.MessageFor = dto.CustomerId.ToString();
+            notificationEventMessage.MessageSent = DateTimeOffset.UtcNow;
+            notificationEventMessage.MessageFrom = "Sales Processor";
+
+            await _publishEndpoint.Publish(notificationEventMessage);
+            await _publishEndpoint.Publish(salesCreatedEventMessage);
+            await _publishEndpoint.Publish(productUpdatedEventMessage);
+
+            if (savedSales.Reference is not null)
+            {
+                orderStatusUpdatedEventMessage.OrderId = Guid.Parse(savedSales.Reference);
+                orderStatusUpdatedEventMessage.IsDelivered = true;
+                orderStatusUpdatedEventMessage.SalesId = savedSales.Id;
+                await _publishEndpoint.Publish(orderStatusUpdatedEventMessage);
+            }
+
+            if (savedSales.Customer is not null)
+                await _publishEndpoint.Publish(customerCreatedEventMessage);
         }
     }
 }

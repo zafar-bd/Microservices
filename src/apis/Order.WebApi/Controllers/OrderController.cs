@@ -37,7 +37,7 @@ namespace Order.WebApi.Controllers
         [ProducesResponseType(typeof(IEnumerable<OrderViewModel>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetOrders([FromQuery] OrderQueryDto queryDto)
         {
-            IEnumerable<OrderViewModel> orders=default;
+            IEnumerable<OrderViewModel> orders = default;
 
             if (!queryDto.Cacheable)
             {
