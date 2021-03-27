@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Ui.Blazor.WA.Models.ViewModels;
 using System.Net.Http.Json;
 using Ui.Blazor.WA.Models.Dto;
-using System.Threading;
 
 namespace Ui.Blazor.WA.HttpClients
 {

@@ -1,15 +1,10 @@
 using MassTransit;
-using MediatR;
-using Microservices.Order.Cqrs.Queries;
 using Microservices.Order.Data.Context;
-using Microservices.Order.Dtos;
 using Microservices.Order.Services;
-using Microservices.Order.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Order.Processor.Worker

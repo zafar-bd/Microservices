@@ -3,7 +3,6 @@ using Microservices.Common.Messages;
 using Microservices.Order.Services;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -29,11 +28,9 @@ namespace Order.Processor.Worker
         {
             try
             {
-                var dto = context.Message;
+                OrderReceived dto = context.Message;
                 var savedOrder = await _orderService.SaveOrderAsync(dto);
-
                 await this.ProcessOrderAsync(savedOrder, dto);
-
                 _logger.LogInformation("Order Processed");
             }
             catch (Exception ex)

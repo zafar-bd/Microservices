@@ -2,7 +2,6 @@
 using MassTransit;
 using Microservices.Common.Cache;
 using Microservices.Order.Data.Context;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
 namespace Order.WebApi.Consumers

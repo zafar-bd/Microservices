@@ -1,5 +1,4 @@
-﻿using Microservices.Common.Exceptions;
-using Microservices.Common.Messages;
+﻿using Microservices.Common.Messages;
 using Microservices.Order.Data.Context;
 using Microservices.Order.Data.Domains;
 using Microsoft.EntityFrameworkCore;

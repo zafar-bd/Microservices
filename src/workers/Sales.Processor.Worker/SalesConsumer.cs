@@ -28,7 +28,7 @@ namespace Sales.Processor.Worker
         {
             try
             {
-                var dto = context.Message;
+                SalesCommandReceived dto = context.Message;
                 var savedSales = await _salesService.SaveSalesAsync(dto);
                 await this.ProcessSalesAsync(savedSales, dto);
                 _logger.LogInformation("Sales Processed");
