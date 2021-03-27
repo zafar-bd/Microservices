@@ -42,8 +42,6 @@ namespace Microservices.Order.Services
             {
                 var productToUpdate = products.FirstOrDefault(p => p.Id == c.ProductId);
                 var price = productToUpdate.Price * c.Qty;
-                //productToUpdate.StockQty -= c.Qty;
-                productToUpdate.HoldQty += c.Qty;
                 totalAmountToPay += price;
                 orderItemsToSave.Add(new OrderItem
                 {
@@ -52,7 +50,6 @@ namespace Microservices.Order.Services
                     Qty = c.Qty
                 });
                 c.ProductName = productToUpdate.Name;
-                _dbContext.Products.Update(productToUpdate);
             });
 
             orderToSave.CustomerId = dto.CustomerId;

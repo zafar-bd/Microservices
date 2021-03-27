@@ -28,7 +28,7 @@ namespace Microservices.Sales.Services
             {
                 foreach (var item in dto.OrderBy(p => p.ProductId))
                 {
-                    if (product.Id == item.ProductId && product.StockQty < item.Qty)
+                    if (product.Id == item.ProductId && (product.StockQty - product.HoldQty) < item.Qty)
                     {
                         throw new BadRequestException("Out of Stock");
                     }

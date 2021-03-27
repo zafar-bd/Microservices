@@ -28,7 +28,7 @@ namespace Product.WebApi.Controllers
         public async Task<IActionResult> GetProducts([FromQuery] ProductQueryDto queryDto)
         {
             IEnumerable<ProductViewModel> products = default;
-            if (queryDto.Cacheable)
+            if (!queryDto.Cacheable)
             {
                 products = await _mediator.Send(queryDto);
                 return Ok(products);

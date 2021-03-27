@@ -13,7 +13,7 @@ namespace Sales.Processor.Worker
     {
         public static void Main(string[] args)
         {
-            Console.Title = "Order Processor";
+            Console.Title = "Sales Processor";
             CreateHostBuilder(args).Build().Run();
         }
 
