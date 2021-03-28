@@ -45,17 +45,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sales.Processor.Worker", "s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Exception.Worker", "src\workers\Application.Exception.Worker\Application.Exception.Worker.csproj", "{6AC55CE7-682B-4E10-AF88-2FD86BEE7036}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Log.Worker", "src\workers\Application.Log.Worker\Application.Log.Worker.csproj", "{A7EC90D9-9003-46DE-92A0-386CF1866705}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microservices.Exceptions", "src\libraries\Microservices.Exceptions\Microservices.Exceptions.csproj", "{8138FBCC-96D0-4344-9F87-BEDEC94B464F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notification.WebApi", "src\apis\Notification.WebApi\Notification.WebApi.csproj", "{F9448D4A-65AD-4C1D-89E5-42F0DC7F922A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductService.ProductSync.Worker", "src\workers\ProductService.ProductSync.Worker\ProductService.ProductSync.Worker.csproj", "{B005B3ED-D0FF-41AC-A182-18ADB94AB096}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductService.ProductSync.Worker", "src\workers\ProductService.ProductSync.Worker\ProductService.ProductSync.Worker.csproj", "{B005B3ED-D0FF-41AC-A182-18ADB94AB096}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.ProductSync.Worker", "src\workers\OrderService.ProductSync.Worker\OrderService.ProductSync.Worker.csproj", "{3F6F3E97-3205-4903-8FF5-EEFC9D7D6954}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderService.ProductSync.Worker", "src\workers\OrderService.ProductSync.Worker\OrderService.ProductSync.Worker.csproj", "{3F6F3E97-3205-4903-8FF5-EEFC9D7D6954}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesService.ProductSync.Worker", "src\workers\SalesService.ProductSync.Worker\SalesService.ProductSync.Worker.csproj", "{D24DCE09-3605-41C4-81DE-DAFC87482845}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalesService.ProductSync.Worker", "src\workers\SalesService.ProductSync.Worker\SalesService.ProductSync.Worker.csproj", "{D24DCE09-3605-41C4-81DE-DAFC87482845}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -115,10 +113,6 @@ Global
 		{6AC55CE7-682B-4E10-AF88-2FD86BEE7036}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6AC55CE7-682B-4E10-AF88-2FD86BEE7036}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6AC55CE7-682B-4E10-AF88-2FD86BEE7036}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A7EC90D9-9003-46DE-92A0-386CF1866705}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A7EC90D9-9003-46DE-92A0-386CF1866705}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A7EC90D9-9003-46DE-92A0-386CF1866705}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A7EC90D9-9003-46DE-92A0-386CF1866705}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8138FBCC-96D0-4344-9F87-BEDEC94B464F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8138FBCC-96D0-4344-9F87-BEDEC94B464F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8138FBCC-96D0-4344-9F87-BEDEC94B464F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -163,7 +157,6 @@ Global
 		{14C67713-3353-4F2D-ADCC-0BE081BC3628} = {C37CE707-3AAF-4CB3-9275-470389E507F9}
 		{8AFBF5E2-FB8D-463C-AC8A-84CBE8D7BCBA} = {C37CE707-3AAF-4CB3-9275-470389E507F9}
 		{6AC55CE7-682B-4E10-AF88-2FD86BEE7036} = {C37CE707-3AAF-4CB3-9275-470389E507F9}
-		{A7EC90D9-9003-46DE-92A0-386CF1866705} = {C37CE707-3AAF-4CB3-9275-470389E507F9}
 		{8138FBCC-96D0-4344-9F87-BEDEC94B464F} = {7AC63B39-A92F-4468-AF3C-CB77E2560635}
 		{F9448D4A-65AD-4C1D-89E5-42F0DC7F922A} = {D2B6911D-3AC9-4563-8893-5BA99863E963}
 		{B005B3ED-D0FF-41AC-A182-18ADB94AB096} = {C37CE707-3AAF-4CB3-9275-470389E507F9}
