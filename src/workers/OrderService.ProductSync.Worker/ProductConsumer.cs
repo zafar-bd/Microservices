@@ -39,21 +39,24 @@ namespace OrderService.ProductSync.Worker
                     if (product.Id != dto.ProductId)
                         await this.CreateProductAsync(dto);
                     else
-                        this.UpdateProduct(dto, product);
+                        this.UpdateProduct(message.ProductUpdatedFrom, dto, product);
                 }
             }
 
             await _dbContext.SaveChangesAsync();
         }
 
-        private void UpdateProduct(UpdatedItem dto, Product product)
+        private void UpdateProduct(ProductUpdatedFrom updatedFrom, UpdatedItem dto, Product product)
         {
             if (!string.IsNullOrEmpty(dto.ProductName))
                 product.Name = dto.ProductName;
-            if (dto.HoldQty is not null)
-                product.HoldQty += (int)dto.HoldQty;
-            if (dto.StockQty is not null)
-                product.StockQty += (int)dto.StockQty;
+            if (updatedFrom != ProductUpdatedFrom.OrderService)
+            {
+                if (dto.HoldQty is not null)
+                    product.HoldQty += (int)dto.HoldQty;
+                if (dto.StockQty is not null)
+                    product.StockQty += (int)dto.StockQty;
+            }
             if (dto.Price is not null)
                 product.Price = (decimal)dto.Price;
             _dbContext.Products.Update(product);

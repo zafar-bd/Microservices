@@ -5,6 +5,7 @@ namespace Microservices.Common.Messages
 {
     public class ProductUpdated
     {
+        public ProductUpdatedFrom ProductUpdatedFrom { get; set; }
         public List<UpdatedItem> UpdatedItems { get; set; }
         = new List<UpdatedItem>();
     }
@@ -23,5 +24,12 @@ namespace Microservices.Common.Messages
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+    }
+
+    public enum ProductUpdatedFrom
+    {
+        ProductService,
+        OrderService,
+        SalesService
     }
 }

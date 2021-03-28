@@ -112,6 +112,7 @@ namespace Order.Processor.Worker
 
             await _publishEndpoint.Publish(notificationEventMessage);
             await _publishEndpoint.Publish(orderCreatedEventMessage);
+            productUpdatedEventMessage.ProductUpdatedFrom = ProductUpdatedFrom.OrderService;
             await _publishEndpoint.Publish(productUpdatedEventMessage);
 
             if (savedOrder.Customer is not null)

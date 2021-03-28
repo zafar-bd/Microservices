@@ -50,6 +50,9 @@ namespace Microservices.Sales.Services
                     Qty = c.Qty
                 });
                 c.ProductName = productToUpdate.Name;
+                productToUpdate.HoldQty -= c.Qty;
+                productToUpdate.StockQty -= c.Qty;
+                _dbContext.Products.Update(productToUpdate);
             });
 
             salesToSave.CustomerId = dto.CustomerId;

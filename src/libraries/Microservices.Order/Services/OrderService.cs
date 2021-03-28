@@ -50,6 +50,8 @@ namespace Microservices.Order.Services
                     Qty = c.Qty
                 });
                 c.ProductName = productToUpdate.Name;
+                productToUpdate.HoldQty += c.Qty;
+                _dbContext.Products.Update(productToUpdate);
             });
 
             orderToSave.CustomerId = dto.CustomerId;

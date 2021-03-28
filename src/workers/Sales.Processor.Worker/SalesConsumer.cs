@@ -112,6 +112,7 @@ namespace Sales.Processor.Worker
 
             await _publishEndpoint.Publish(notificationEventMessage);
             await _publishEndpoint.Publish(salesCreatedEventMessage);
+            productUpdatedEventMessage.ProductUpdatedFrom = ProductUpdatedFrom.SalesService;
             await _publishEndpoint.Publish(productUpdatedEventMessage);
 
             if (savedSales.Reference is not null)
