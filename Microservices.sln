@@ -55,6 +55,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderService.ProductSync.Wo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalesService.ProductSync.Worker", "src\workers\SalesService.ProductSync.Worker\SalesService.ProductSync.Worker.csproj", "{D24DCE09-3605-41C4-81DE-DAFC87482845}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Cron.Worker", "src\workers\Application.Cron.Worker\Application.Cron.Worker.csproj", "{849F6A66-409B-4B54-A783-1C45FBE90B61}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -133,6 +135,10 @@ Global
 		{D24DCE09-3605-41C4-81DE-DAFC87482845}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D24DCE09-3605-41C4-81DE-DAFC87482845}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D24DCE09-3605-41C4-81DE-DAFC87482845}.Release|Any CPU.Build.0 = Release|Any CPU
+		{849F6A66-409B-4B54-A783-1C45FBE90B61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{849F6A66-409B-4B54-A783-1C45FBE90B61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{849F6A66-409B-4B54-A783-1C45FBE90B61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{849F6A66-409B-4B54-A783-1C45FBE90B61}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -162,6 +168,7 @@ Global
 		{B005B3ED-D0FF-41AC-A182-18ADB94AB096} = {C37CE707-3AAF-4CB3-9275-470389E507F9}
 		{3F6F3E97-3205-4903-8FF5-EEFC9D7D6954} = {C37CE707-3AAF-4CB3-9275-470389E507F9}
 		{D24DCE09-3605-41C4-81DE-DAFC87482845} = {C37CE707-3AAF-4CB3-9275-470389E507F9}
+		{849F6A66-409B-4B54-A783-1C45FBE90B61} = {C37CE707-3AAF-4CB3-9275-470389E507F9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {740ED24D-19B6-4E15-93B5-4BBEF415CB1B}
