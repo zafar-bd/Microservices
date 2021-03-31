@@ -55,7 +55,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderService.ProductSync.Wo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalesService.ProductSync.Worker", "src\workers\SalesService.ProductSync.Worker\SalesService.ProductSync.Worker.csproj", "{D24DCE09-3605-41C4-81DE-DAFC87482845}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Cron.Worker", "src\workers\Application.Cron.Worker\Application.Cron.Worker.csproj", "{849F6A66-409B-4B54-A783-1C45FBE90B61}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Cron.Worker", "src\workers\Application.Cron.Worker\Application.Cron.Worker.csproj", "{849F6A66-409B-4B54-A783-1C45FBE90B61}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

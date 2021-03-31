@@ -27,6 +27,12 @@ namespace Product.WebApi.Controllers
             this._redisCacheClient = redisCacheClient;
         }
 
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(ProductViewModel), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetProducts([FromQuery] ProductQueryByIdDto dto)
+          => Ok(await _mediator.Send(dto));
+
+
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<ProductViewModel>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetProducts([FromQuery] ProductQueryDto queryDto)

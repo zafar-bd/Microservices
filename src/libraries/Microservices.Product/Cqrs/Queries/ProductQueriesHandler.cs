@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microservices.Order.Data.Context;
@@ -9,11 +10,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microservices.Common.Exceptions;
 
 namespace Microservices.Product.Cqrs.Queries
 {
     public class ProductQueriesHandler :
-          IRequestHandler<ProductQueryDto, IEnumerable<ProductViewModel>>
+          IRequestHandler<ProductQueryDto, IEnumerable<ProductViewModel>>,
+          IRequestHandler<ProductQueryByIdDto, ProductViewModel>
     {
         private readonly ProductDbContext _productDbContext;
         private readonly IMapper _mapper;
@@ -40,6 +43,19 @@ namespace Microservices.Product.Cqrs.Queries
                 .ToListAsync();
 
             return products;
+        }
+
+        public async Task<ProductViewModel> Handle(ProductQueryByIdDto request, CancellationToken cancellationToken)
+        {
+            var product = await _productDbContext
+                .Products
+                .ProjectTo<ProductViewModel>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
+
+            if (product is null)
+                throw new BadRequestException("Not found");
+
+            return product;
         }
     }
 }
