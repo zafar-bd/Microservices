@@ -1,4 +1,5 @@
-﻿using MassTransit;
+﻿using System.Collections.Generic;
+using MassTransit;
 using Microservices.Common.Messages;
 using Microservices.Order.Data.Context;
 using Microsoft.EntityFrameworkCore;
@@ -30,8 +31,41 @@ namespace ProductService.ProductSync.Worker
         {
             var productsFromDb = await _dbContext.Products
                 .Where(p => message.UpdatedItems.Select(i => i.ProductId).Contains(p.Id))
+                .Include(p => p.ProductCategory)
                 .ToListAsync();
 
+            await HandleProductCategoryAsync(message, productsFromDb);
+            await HandleProductAsync(message, productsFromDb);
+            await _dbContext.SaveChangesAsync();
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        private async Task HandleProductCategoryAsync(ProductUpdated message, List<Product> productsFromDb)
+        {
+            foreach (var product in productsFromDb.OrderBy(p => p.Id))
+            {
+                foreach (var dto in message.UpdatedItems.OrderBy(p => p.ProductId))
+                {
+                    if (product.ProductCategoryId != dto.UpdatedProductCategory.Id)
+                    {
+                        await _dbContext.Categories.AddAsync(new ProductCategory
+                        {
+                            Id = dto.UpdatedProductCategory.Id,
+                            Name = dto.UpdatedProductCategory.Name
+                        });
+                    }
+                    else
+                    {
+                        product.ProductCategory.Name = dto.UpdatedProductCategory.Name;
+                        _dbContext.Categories.Update(product.ProductCategory);
+                    }
+                }
+            }
+        }
+
+        private async Task HandleProductAsync(ProductUpdated message, List<Product> productsFromDb)
+        {
             foreach (var product in productsFromDb.OrderBy(p => p.Id))
             {
                 foreach (var dto in message.UpdatedItems.OrderBy(p => p.ProductId))
@@ -42,8 +76,6 @@ namespace ProductService.ProductSync.Worker
                         this.UpdateProduct(message.ProductUpdatedFrom, dto, product);
                 }
             }
-
-            await _dbContext.SaveChangesAsync();
         }
 
         private void UpdateProduct(ProductUpdatedFrom updatedFrom, UpdatedItem dto, Product product)

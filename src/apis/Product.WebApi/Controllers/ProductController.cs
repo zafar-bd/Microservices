@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System;
+using MediatR;
 using Microservices.Common.Cache;
 using Microservices.Product.Dtos;
 using Microservices.Product.ViewModels;
@@ -6,7 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microservices.Common.Exceptions;
+using Microservices.Common.Messages;
 
 namespace Product.WebApi.Controllers
 {
@@ -48,6 +52,20 @@ namespace Product.WebApi.Controllers
                 await _redisCacheClient.AddAsync(cacheKey, products, 300);
 
             return Ok(products);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateProduct([FromBody] ProductCreateCommandDto dto)
+        {
+            await _mediator.Send(dto);
+            return Created("", dto);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] ProductUpdateCommandDto dto)
+        {
+            await _mediator.Send(dto);
+            return NoContent();
         }
     }
 }

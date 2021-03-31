@@ -31,8 +31,10 @@ namespace Microservices.Common.Helpers
                 .ToList()
                 .ForEach(p =>
                 {
-                    p.SetPrecision(18);
-                    p.SetScale(2);
+                    if (p.GetPrecision() is null)
+                        p.SetPrecision(18);
+                    if (p.GetScale() is null)
+                        p.SetScale(2);
                 });
         }
 

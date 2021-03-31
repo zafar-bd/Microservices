@@ -21,6 +21,7 @@ using Microsoft.OpenApi.Models;
 using Product.WebApi.Helpers;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Microservices.Product.Cqrs.Commands;
 
 namespace Product.WebApi
 {
@@ -45,6 +46,8 @@ namespace Product.WebApi
             });
 
             services.AddScoped<IRequestHandler<ProductQueryDto, IEnumerable<ProductViewModel>>, ProductQueriesHandler>();
+            services.AddScoped<IRequestHandler<ProductCreateCommandDto, Unit>, ProductCommandHandler>();
+            services.AddScoped<IRequestHandler<ProductUpdateCommandDto, Unit>, ProductCommandHandler>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Product.WebApi", Version = "v1" });
