@@ -45,6 +45,7 @@ namespace Product.WebApi
                 options.UseSqlServer(conStr);
             });
 
+            services.AddScoped<IRequestHandler<ProductQueryByIdDto, ProductViewModel>, ProductQueriesHandler>();
             services.AddScoped<IRequestHandler<ProductQueryDto, IEnumerable<ProductViewModel>>, ProductQueriesHandler>();
             services.AddScoped<IRequestHandler<ProductCreateCommandDto, Unit>, ProductCommandHandler>();
             services.AddScoped<IRequestHandler<ProductUpdateCommandDto, Unit>, ProductCommandHandler>();

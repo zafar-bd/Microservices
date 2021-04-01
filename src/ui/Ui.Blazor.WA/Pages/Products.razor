@@ -3,7 +3,9 @@
 @inject ProductHttpClient productService
 @inject OrderHttpClient orderService
 @inject SweetAlertService Swal
-<h1>Products</h1>
+@inject NavigationManager Navigation
+<h1>Products</h1> <input type="button" @onclick="@(e =>  Navigation.NavigateTo("/addproduct"))"
+                         class="btn btn-primary" value="New" />
 
 @if (products == null)
 {
@@ -30,9 +32,11 @@ else
                     <td>@product.ProductCategory?.Name</td>
                     <td>@(product.StockQty - @product.HoldQty)</td>
                     <td>
-                        <input type="button" disabled="@((product.StockQty - @product.HoldQty) == 0 || commandStarted)"
+                        <input type="button" disabled="@((product.StockQty - product.HoldQty) == 0 || commandStarted)"
                                @onclick="@(async e => await this.CheckoutAsync(product.Id,5))"
                                class="btn btn-primary" value="Add to Card" />
+                        <input type="button" @onclick="@(e =>  this.GotoEditPage(product.Id))"
+                               class="btn btn-primary" value="Edit" />
                     </td>
                 </tr>
             }
@@ -48,8 +52,14 @@ else
         products = await productService.GetProductsAsync(false);
     }
 
+    void GotoEditPage(Guid id)
+    {
+        Navigation.NavigateTo("/editproduct/" + id);
+    }
+
     private async Task CheckoutAsync(Guid productId, uint qty)
     {
+
         commandStarted = true;
         await orderService.CheckoutAsync(new ShoppingCartDto
         {
@@ -68,7 +78,7 @@ else
         {
             if (p.Id == productId)
             {
-                p.HoldQty += qty;
+                p.HoldQty += (int)qty;
             }
         });
         await Swal.FireAsync(new SweetAlertOptions

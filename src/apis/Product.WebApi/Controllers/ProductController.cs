@@ -7,10 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using Microservices.Common.Exceptions;
-using Microservices.Common.Messages;
 
 namespace Product.WebApi.Controllers
 {
@@ -29,8 +26,8 @@ namespace Product.WebApi.Controllers
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ProductViewModel), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetProducts([FromQuery] ProductQueryByIdDto dto)
-          => Ok(await _mediator.Send(dto));
+        public async Task<IActionResult> GetProduct(Guid id) 
+        => Ok(await _mediator.Send(new ProductQueryByIdDto { Id = id }));
 
 
         [HttpGet]

@@ -1,6 +1,15 @@
-﻿@page "/editproduct/{id}"
-<h3>EditProduct</h3>
+﻿@page "/editproduct/{id:guid}"
+@inject ProductHttpClient ProductService
+<h3>Edit Product</h3>
+<label>Name: @productView?.Name</label>
 
 @code {
+    [Parameter]
+    public Guid Id { get; set; }
 
+    ProductViewModel productView = new();
+    protected override async Task OnInitializedAsync()
+    {
+        productView = await this.ProductService.GetProductAsync(Id);
+    }
 }
