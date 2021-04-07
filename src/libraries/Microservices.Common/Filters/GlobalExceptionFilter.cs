@@ -10,16 +10,17 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Data;
 using System.Text.RegularExpressions;
-
+using Microsoft.Extensions.Logging;
 namespace Microservices.Common.Filters
 {
     public class GlobalExceptionFilter : ExceptionFilterAttribute
     {
-        private readonly IPublishEndpoint _publishEndpoint;
+        private readonly ILogger<GlobalExceptionFilter> _logger;
 
-        public GlobalExceptionFilter(IPublishEndpoint publishEndpoint)
+        public GlobalExceptionFilter(
+            ILogger<GlobalExceptionFilter> logger)
         {
-            _publishEndpoint = publishEndpoint;
+            _logger = logger;
         }
         public override async System.Threading.Tasks.Task OnExceptionAsync(ExceptionContext context)
         {
@@ -99,6 +100,8 @@ namespace Microservices.Common.Filters
                     StackTrace = context.Exception?.StackTrace,
                     FunctionName = context.HttpContext.Request.Path.Value
                 });
+
+                _logger.LogCritical(context.Exception, context.Exception.Message);
             }
         }
     }

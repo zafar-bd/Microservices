@@ -1,4 +1,5 @@
 using System;
+using Microservices.Common.Helpers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Serilog;
@@ -9,19 +10,13 @@ namespace Product.WebApi
     {
         public static void Main(string[] args)
         {
-            Log.Logger = new LoggerConfiguration()
-                .WriteTo
-                .Seq("http://localhost:5341")
-                .MinimumLevel
-                .Warning()
-                .Enrich
-                .FromLogContext()
-                .CreateLogger();
+            GlobalLogger.ConfigureLog();
             CreateHostBuilder(args).Build().Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
