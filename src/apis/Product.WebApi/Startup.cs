@@ -99,6 +99,12 @@ namespace Product.WebApi
 
             services.AddMassTransitHostedService();
             services.AddHostedService<GlobalExceptionBackgroundService>();
+
+            //services.AddLogging(loggingBuilder =>
+            //{
+            //    loggingBuilder.AddSeq();
+            //});
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

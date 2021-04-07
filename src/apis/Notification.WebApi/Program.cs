@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 
 namespace Notification.WebApi
 {
@@ -7,6 +8,14 @@ namespace Notification.WebApi
     {
         public static void Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo
+                .Seq("http://localhost:5341")
+                .MinimumLevel
+                .Warning()
+                .Enrich
+                .FromLogContext()
+                .CreateLogger();
             CreateHostBuilder(args).Build().Run();
         }
 

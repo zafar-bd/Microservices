@@ -24,7 +24,7 @@ namespace Application.Cron.Worker
                 });
             _nextRun = _schedule.GetNextOccurrence(DateTime.Now);
         }
-
+        
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             do
