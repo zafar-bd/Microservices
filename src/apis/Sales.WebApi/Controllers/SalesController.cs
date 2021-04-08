@@ -19,12 +19,12 @@ namespace Sales.WebApi.Controllers
     {
         private readonly IMediator _mediator;
         private readonly ICacheHelper _redisCacheClient;
-        private readonly IPublishEndpoint _publishEndpoint;
+        private readonly IBus _publishEndpoint;
 
         public SalesController(
             IMediator mediator,
             ICacheHelper redisCacheClient,
-            IPublishEndpoint publishEndpoint)
+            IBus publishEndpoint)
         {
             _mediator = mediator;
             _redisCacheClient = redisCacheClient;
@@ -59,7 +59,7 @@ namespace Sales.WebApi.Controllers
             if (!isValidStock)
                 throw new BadRequestException("Sorry, Out of Stock!");
 
-            await _publishEndpoint.Publish(dto);
+            await _publishEndpoint.Send(dto);
             await _redisCacheClient.RemoveAsync($"sales");
 
             return Accepted();

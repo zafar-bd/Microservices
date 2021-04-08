@@ -19,7 +19,7 @@ namespace Application.Exception.Worker
 
         public async Task Consume(ConsumeContext<Microservices.Common.Messages.GlobalExceptionMessage> context)
         {
-            await _dbContext.GlobalExceptionMessages.AddAsync(new GlobalExceptionMessage
+            var message = new GlobalExceptionMessage
             {
                 ApplicationName = context.Message.ApplicationName,
                 ExceptionMessage = context.Message.ExceptionMessage,
@@ -28,9 +28,10 @@ namespace Application.Exception.Worker
                 OccurredAt = context.Message.OccurredAt,
                 StackTrace = context.Message.StackTrace,
                 UserName = context.Message.UserName
-            });
+            };
+            await _dbContext.GlobalExceptionMessages.AddAsync(message);
             await _dbContext.SaveChangesAsync();
-            _logger.LogInformation(context.Message.ExceptionMessage);
+            _logger.LogError(context.Message.ExceptionMessage);
         }
     }
 }
