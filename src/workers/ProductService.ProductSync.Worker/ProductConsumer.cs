@@ -34,7 +34,7 @@ namespace ProductService.ProductSync.Worker
                 .Include(p => p.ProductCategory)
                 .ToListAsync();
 
-            await HandleProductCategoryAsync(message, productsFromDb);
+            //await HandleProductCategoryAsync(message, productsFromDb);
             await HandleProductAsync(message, productsFromDb);
             await _dbContext.SaveChangesAsync();
 
@@ -47,7 +47,7 @@ namespace ProductService.ProductSync.Worker
             {
                 foreach (var dto in message.UpdatedItems.OrderBy(p => p.ProductId))
                 {
-                    if (product.ProductCategoryId != dto.UpdatedProductCategory.Id)
+                    if (product.ProductCategoryId != dto?.UpdatedProductCategory?.Id)
                     {
                         await _dbContext.Categories.AddAsync(new ProductCategory
                         {

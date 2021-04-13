@@ -76,6 +76,7 @@ namespace Order.Processor.Worker
             }
 
             decimal totalAmountToPay = 0;
+
             savedOrder.OrderItems.ToList().ForEach(c =>
             {
                 var product = dto.OrderReceivedItems.Find(p => p.ProductId == c.ProductId);

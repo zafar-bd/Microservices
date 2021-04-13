@@ -94,8 +94,8 @@ namespace Order.WebApi.Controllers
             if (!isValidStock)
                 throw new BadRequestException("Sorry, Out of Stock!");
 
-            await _publishEndpoint.Send(dto);
-            await _redisCacheClient.RemoveAsync($"order-{ dto.CustomerId}");
+            await _publishEndpoint.Publish(dto);
+            await _redisCacheClient.RemoveAsync($"order-{dto.CustomerId}");
 
             return Accepted();
         }
