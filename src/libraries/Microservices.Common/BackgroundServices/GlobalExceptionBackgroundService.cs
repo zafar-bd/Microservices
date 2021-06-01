@@ -20,7 +20,7 @@ namespace Microservices.Common.BackgroundServices
             while (!stoppingToken.IsCancellationRequested)
             {
                 var exception = await EventDispatchChannel<GlobalExceptionMessage>.PullAsync();
-                await _publishEndpoint.Publish(exception);
+                await _publishEndpoint.Publish(exception, stoppingToken);
             }
         }
     }
