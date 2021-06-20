@@ -13,7 +13,7 @@ namespace Application.Cron.Worker
 
         private readonly CrontabSchedule _schedule;
         private DateTime _nextRun;
-        private static string Schedule => "*/10 * * * * *"; //Runs every 10 seconds
+        private static string Schedule => "* * * * * *"; //every 10 min https://crontab.guru/
         public Worker(ILogger<Worker> logger)
         {
             _logger = logger;
@@ -29,8 +29,8 @@ namespace Application.Cron.Worker
         {
             do
             {
+                await Task.CompletedTask;
                 var now = DateTime.Now;
-                var nextrun = _schedule.GetNextOccurrence(now);
                 if (now > _nextRun)
                 {
                     Process();
@@ -42,6 +42,7 @@ namespace Application.Cron.Worker
 
         private void Process()
         {
+            Console.WriteLine($"scheduled job every {Schedule} hello world {DateTime.Now:F}");
             _logger.LogInformation($"scheduled job every {Schedule} hello world {DateTime.Now:F}");
         }
     }

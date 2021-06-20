@@ -32,7 +32,8 @@
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
       }
-    },{
+    },
+    {
       "DownstreamPathTemplate": "/api/{version}/{everything}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
